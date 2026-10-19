@@ -233,7 +233,11 @@ export function Modal({
     };
   }, [onClose]);
   return (
-    <div className="modal-backdrop" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div
+      className="modal-backdrop"
+      role="presentation"
+      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div
         className="modal fade-in"
         role="dialog"
@@ -273,7 +277,12 @@ export function ConfirmButton({
   const [busy, setBusy] = useState(false);
   return (
     <>
-      <Button variant={variant} size={size} onClick={() => setOpen(true)} disabled={disabled || busy}>
+      <Button
+        variant={variant}
+        size={size}
+        onClick={() => setOpen(true)}
+        disabled={disabled || busy}
+      >
         {label}
       </Button>
       {open && (

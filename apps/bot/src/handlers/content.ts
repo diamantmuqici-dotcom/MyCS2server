@@ -1,8 +1,4 @@
-import {
-  EmbedBuilder,
-  type ChatInputCommandInteraction,
-  type TextChannel,
-} from 'discord.js';
+import { EmbedBuilder, type ChatInputCommandInteraction, type TextChannel } from 'discord.js';
 import {
   BRAND,
   BRAND_COLOR_DISCORD,
@@ -71,7 +67,10 @@ export async function handlePostRules(
     });
     if (!confirmed) return;
 
-    const embeds: EmbedBuilder[] = [rulesHeaderEmbed(), ...RULES.map((section, index) => rulesSectionEmbed(index, section))];
+    const embeds: EmbedBuilder[] = [
+      rulesHeaderEmbed(),
+      ...RULES.map((section, index) => rulesSectionEmbed(index, section)),
+    ];
     const messages = [] as { id: string }[];
     for (let index = 0; index < embeds.length; index += 10) {
       const chunk = embeds.slice(index, index + 10);
@@ -84,11 +83,16 @@ export async function handlePostRules(
     });
     await replyWithEmbeds(
       interaction,
-      baseEmbed('Rules published', `Posted **${embeds.length}** embeds in <#${channel.id}>.`)
-        .addFields(
-          { name: 'Version', value: RULES_VERSION, inline: true },
-          { name: 'Website', value: 'The website renders the same source text, so the two cannot drift apart.' },
-        ),
+      baseEmbed(
+        'Rules published',
+        `Posted **${embeds.length}** embeds in <#${channel.id}>.`,
+      ).addFields(
+        { name: 'Version', value: RULES_VERSION, inline: true },
+        {
+          name: 'Website',
+          value: 'The website renders the same source text, so the two cannot drift apart.',
+        },
+      ),
     );
   } catch (error) {
     await showError(interaction, error, ctx);
@@ -105,7 +109,8 @@ export async function handleAnnounce(
     const config = await loadConfig(ctx, guild.id);
     const title = interaction.options.getString('title', true).trim();
     const message = interaction.options.getString('message', true).trim();
-    const category = (interaction.options.getString('category') ?? 'GENERAL') as AnnouncementCategory;
+    const category = (interaction.options.getString('category') ??
+      'GENERAL') as AnnouncementCategory;
     const image = interaction.options.getString('image')?.trim() || null;
     if (image && !/^https?:\/\/\S+$/i.test(image)) {
       throw new UserFacingError('image must be a full http(s) URL.');
@@ -169,9 +174,10 @@ export async function handleAnnounce(
 
     await replyWithEmbeds(
       interaction,
-      baseEmbed('Announcement processed', websiteNote).addFields(
-        { name: 'Discord message', value: `[Jump to message](${posted.url})` },
-      ),
+      baseEmbed('Announcement processed', websiteNote).addFields({
+        name: 'Discord message',
+        value: `[Jump to message](${posted.url})`,
+      }),
     );
   } catch (error) {
     await showError(interaction, error, ctx);
@@ -207,7 +213,9 @@ export async function handlePostServerInfo(
         { name: 'Created', value: formatUtc(guild.createdAt.toISOString()), inline: true },
         {
           name: 'Rules',
-          value: config?.channels?.rules ? `<#${config.channels.rules}>` : 'Run /post-rules to publish them',
+          value: config?.channels?.rules
+            ? `<#${config.channels.rules}>`
+            : 'Run /post-rules to publish them',
           inline: true,
         },
         {

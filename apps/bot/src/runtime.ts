@@ -72,11 +72,14 @@ async function handleBanAdd(ban: GuildBan, ctx: BotContext): Promise<void> {
     guildName: guild.name,
     actionType: 'BAN',
     target: { id: ban.user.id, username: ban.user.username, globalName: ban.user.globalName },
-    moderator: verified && audit ? { id: audit.executorId as string, name: audit.executorName } : null,
+    moderator:
+      verified && audit ? { id: audit.executorId as string, name: audit.executorName } : null,
     reason: ban.reason ?? null,
     occurredAt: new Date().toISOString(),
     source: 'GATEWAY_AUDIT_LOG' as const,
-    dedupeKey: audit ? `ban:audit:${guild.id}:${audit.entryId}` : `ban:gateway:${guild.id}:${ban.user.id}:${Date.now()}`,
+    dedupeKey: audit
+      ? `ban:audit:${guild.id}:${audit.entryId}`
+      : `ban:gateway:${guild.id}:${ban.user.id}:${Date.now()}`,
     auditEntryId: audit?.entryId ?? null,
     attributionStatus: verified ? ('VERIFIED' as const) : ('UNKNOWN' as const),
     attributionEvidence: {
@@ -105,7 +108,8 @@ async function handleBanRemove(ban: GuildBan, ctx: BotContext): Promise<void> {
     guildName: guild.name,
     actionType: 'UNBAN',
     target: { id: ban.user.id, username: ban.user.username, globalName: ban.user.globalName },
-    moderator: verified && audit ? { id: audit.executorId as string, name: audit.executorName } : null,
+    moderator:
+      verified && audit ? { id: audit.executorId as string, name: audit.executorName } : null,
     reason: ban.reason ?? null,
     occurredAt: new Date().toISOString(),
     source: 'GATEWAY_AUDIT_LOG',
@@ -249,9 +253,7 @@ export async function deliver(
   }
 
   const embed =
-    delivery.topic === 'DISCORD_ANNOUNCEMENT'
-      ? announcementEmbed(payload, ctx)
-      : logEmbed(payload);
+    delivery.topic === 'DISCORD_ANNOUNCEMENT' ? announcementEmbed(payload, ctx) : logEmbed(payload);
 
   const message = await channel.send({ embeds: [embed], allowedMentions: { parse: [] } });
   await ctx.api.reportDelivery(delivery.id, {
@@ -268,10 +270,17 @@ function announcementEmbed(payload: Record<string, unknown>, ctx: BotContext) {
   const category = typeof payload.category === 'string' ? payload.category : 'GENERAL';
   const imageUrl = typeof payload.imageUrl === 'string' ? payload.imageUrl : null;
   const publishedAt = typeof payload.publishedAt === 'string' ? payload.publishedAt : undefined;
-  const url = typeof payload.url === 'string' && ctx.env.webBaseUrl ? `${ctx.env.webBaseUrl}${payload.url}` : null;
+  const url =
+    typeof payload.url === 'string' && ctx.env.webBaseUrl
+      ? `${ctx.env.webBaseUrl}${payload.url}`
+      : null;
   const embed = baseEmbed(title, body.slice(0, 4096))
     .addFields({ name: 'Category', value: category.replace('_', ' '), inline: true })
-    .addFields({ name: 'Published', value: formatUtc(publishedAt ?? new Date().toISOString()), inline: true });
+    .addFields({
+      name: 'Published',
+      value: formatUtc(publishedAt ?? new Date().toISOString()),
+      inline: true,
+    });
   if (imageUrl && /^https?:\/\//i.test(imageUrl)) embed.setImage(imageUrl);
   if (url) embed.setURL(url);
   embed.setFooter({ text: `${BRAND.name} • announcement` });
@@ -280,9 +289,12 @@ function announcementEmbed(payload: Record<string, unknown>, ctx: BotContext) {
 
 function logEmbed(payload: Record<string, unknown>) {
   const actionType = typeof payload.actionType === 'string' ? payload.actionType : 'LOG';
-  const target = typeof payload.targetDiscordUserId === 'string' ? payload.targetDiscordUserId : 'unknown';
+  const target =
+    typeof payload.targetDiscordUserId === 'string' ? payload.targetDiscordUserId : 'unknown';
   const moderator =
-    typeof payload.moderatorDiscordUserId === 'string' ? `<@${payload.moderatorDiscordUserId}>` : 'Unknown (unverified)';
+    typeof payload.moderatorDiscordUserId === 'string'
+      ? `<@${payload.moderatorDiscordUserId}>`
+      : 'Unknown (unverified)';
   const embed = baseEmbed(
     `${actionType.replace(/_/g, ' ')} • ${typeof payload.caseRef === 'string' ? payload.caseRef : ''}`,
     typeof payload.reason === 'string' ? payload.reason : 'No reason recorded.',
@@ -296,7 +308,10 @@ function logEmbed(payload: Record<string, unknown>) {
     },
     {
       name: 'When',
-      value: typeof payload.occurredAt === 'string' ? formatUtc(payload.occurredAt) : formatUtc(new Date().toISOString()),
+      value:
+        typeof payload.occurredAt === 'string'
+          ? formatUtc(payload.occurredAt)
+          : formatUtc(new Date().toISOString()),
       inline: true,
     },
   );
@@ -304,7 +319,9 @@ function logEmbed(payload: Record<string, unknown>) {
     embed.addFields({
       name: 'Steam',
       value: `[\`${payload.steamId64}\`](https://steamcommunity.com/profiles/${payload.steamId64})\n${
-        typeof payload.steamNameAtEvent === 'string' ? `Name at event: **${payload.steamNameAtEvent}**` : ''
+        typeof payload.steamNameAtEvent === 'string'
+          ? `Name at event: **${payload.steamNameAtEvent}**`
+          : ''
       }`,
     });
   }

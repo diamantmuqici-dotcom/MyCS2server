@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { ANNOUNCEMENT_CATEGORIES, RULES_VERSION, isValidSteamId64, type ApiEnv } from '@dardania/shared';
+import {
+  ANNOUNCEMENT_CATEGORIES,
+  RULES_VERSION,
+  isValidSteamId64,
+  type ApiEnv,
+} from '@dardania/shared';
 import {
   completeDelivery,
   getCaseDetail,
@@ -20,7 +25,6 @@ import {
   recordServiceHealth,
   searchSteamAccounts,
   upsertGuild,
-  type Db,
 } from '@dardania/db';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { badRequest, notFound } from '../errors.js';
@@ -61,9 +65,7 @@ function requireServiceAuth(env: ApiEnv) {
     const header = request.headers['x-service-token'];
     const provided = Array.isArray(header) ? header[0] : header;
     if (!provided || !safeEqual(provided, env.serviceToken)) {
-      return reply
-        .code(401)
-        .send({ error: 'unauthorized', message: 'Invalid service token.' });
+      return reply.code(401).send({ error: 'unauthorized', message: 'Invalid service token.' });
     }
   };
 }
@@ -77,10 +79,7 @@ const guildQuerySchema = z.object({
 const steamParamsSchema = z.object({ steamId64: z.string().trim().min(17).max(17) });
 const userParamsSchema = z.object({ userId: discordIdSchema });
 
-export async function registerInternalRoutes(
-  app: FastifyInstance,
-  deps: AppDeps,
-): Promise<void> {
+export async function registerInternalRoutes(app: FastifyInstance, deps: AppDeps): Promise<void> {
   const { env, db, steam } = deps;
   const moderation = new ModerationService(db, env, steam, deps.now);
 
@@ -115,7 +114,10 @@ export async function registerInternalRoutes(
     assertGuildAllowed(env, parsed.guildId);
     const result = await listCases(db, {
       ...parsed,
-      dateTo: parsed.dateTo && /^\d{4}-\d{2}-\d{2}$/.test(parsed.dateTo) ? `${parsed.dateTo}T23:59:59.999Z` : parsed.dateTo,
+      dateTo:
+        parsed.dateTo && /^\d{4}-\d{2}-\d{2}$/.test(parsed.dateTo)
+          ? `${parsed.dateTo}T23:59:59.999Z`
+          : parsed.dateTo,
       dateFrom:
         parsed.dateFrom && /^\d{4}-\d{2}-\d{2}$/.test(parsed.dateFrom)
           ? `${parsed.dateFrom}T00:00:00.000Z`
@@ -207,7 +209,9 @@ export async function registerInternalRoutes(
   });
 
   app.get('/steam/resolve', async (request) => {
-    const { input } = z.object({ input: z.string().trim().min(1).max(200) }).parse(request.query ?? {});
+    const { input } = z
+      .object({ input: z.string().trim().min(1).max(200) })
+      .parse(request.query ?? {});
     const resolved = await steam.resolveInput(input);
     return resolved;
   });
@@ -383,9 +387,13 @@ export async function registerInternalRoutes(
 
   // ---- Discord delivery outbox (polled by the bot) -----------------------
   app.get('/discord-deliveries', async (request) => {
-    const limit = z.coerce.number().int().min(1).max(50).default(10).parse(
-      (request.query as { limit?: string } | undefined)?.limit ?? 10,
-    );
+    const limit = z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(50)
+      .default(10)
+      .parse((request.query as { limit?: string } | undefined)?.limit ?? 10);
     return { deliveries: await listDueDeliveries(db, deps.now(), limit) };
   });
 
@@ -397,7 +405,12 @@ export async function registerInternalRoutes(
       { id, ok: payload.ok, error: payload.error ?? null },
       deps.now(),
     );
-    if (payload.ok && payload.announcementId && payload.discordMessageId && payload.discordChannelId) {
+    if (
+      payload.ok &&
+      payload.announcementId &&
+      payload.discordMessageId &&
+      payload.discordChannelId
+    ) {
       await markAnnouncementDelivered(
         db,
         payload.announcementId,

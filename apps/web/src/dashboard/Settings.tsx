@@ -37,7 +37,9 @@ const CHANNEL_KEYS = [
 
 export function Settings() {
   const { session } = useAuth();
-  const { data, loading, error, reload } = useApi<{ settings: GuildSettingsDto }>('/api/dashboard/settings');
+  const { data, loading, error, reload } = useApi<{ settings: GuildSettingsDto }>(
+    '/api/dashboard/settings',
+  );
   const mutate = useMutation();
   const [roles, setRoles] = useState<Record<string, string | null>>({});
   const [channels, setChannels] = useState<Record<string, string | null>>({});
@@ -110,8 +112,8 @@ export function Settings() {
 
         {!isOwner && (
           <div className="note">
-            You can review the configuration, but only an Owner can change it. The API rejects writes
-            from Co-Owner sessions.
+            You can review the configuration, but only an Owner can change it. The API rejects
+            writes from Co-Owner sessions.
           </div>
         )}
         {feedback && <Alert tone="success">{feedback}</Alert>}
@@ -138,7 +140,8 @@ export function Settings() {
                 </span>
               </div>
               <p className="small muted">
-                The guild ID is fixed by the backend environment (<span className="mono">DISCORD_GUILD_ID</span>
+                The guild ID is fixed by the backend environment (
+                <span className="mono">DISCORD_GUILD_ID</span>
                 ). It is not editable here.
               </p>
             </section>
@@ -161,7 +164,9 @@ export function Settings() {
                       value={value}
                       disabled={!isOwner}
                       placeholder="role ID or empty"
-                      onChange={(event) => setRoles((current) => ({ ...current, [key]: event.target.value }))}
+                      onChange={(event) =>
+                        setRoles((current) => ({ ...current, [key]: event.target.value }))
+                      }
                     />
                   </Field>
                 ))}

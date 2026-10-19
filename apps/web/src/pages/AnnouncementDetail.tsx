@@ -18,8 +18,8 @@ export function AnnouncementDetail() {
           ← All announcements
         </Link>
         {loading && <Loading label="Loading announcement…" />}
-        {error && (
-          error.status === 404 ? (
+        {error &&
+          (error.status === 404 ? (
             <EmptyState
               icon="file"
               title="Announcement not found"
@@ -32,8 +32,7 @@ export function AnnouncementDetail() {
             />
           ) : (
             <ErrorPanel error={error} onRetry={reload} />
-          )
-        )}
+          ))}
         {data && (
           <article className="card stack" style={{ padding: 'clamp(1.4rem, 4vw, 2.4rem)' }}>
             <div className="row-between">

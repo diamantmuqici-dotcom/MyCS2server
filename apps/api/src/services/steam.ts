@@ -73,7 +73,9 @@ export interface SteamSnapshot {
   currentName: string | null;
 }
 
-function profileStatusFromVisibility(visibility: number | undefined): PlayerSummary['profileStatus'] {
+function profileStatusFromVisibility(
+  visibility: number | undefined,
+): PlayerSummary['profileStatus'] {
   if (visibility === 3) return 'PUBLIC';
   if (visibility === 1) return 'PRIVATE';
   return 'UNKNOWN';
@@ -169,7 +171,8 @@ export class SteamService {
     input: string,
   ): Promise<{ steamId64: string | null; error: string | null; requiresVanityLookup: boolean }> {
     const parsed = parseSteamInput(input);
-    if (parsed.kind === 'steamid64') return { steamId64: parsed.steamId64, error: null, requiresVanityLookup: false };
+    if (parsed.kind === 'steamid64')
+      return { steamId64: parsed.steamId64, error: null, requiresVanityLookup: false };
     if (parsed.kind === 'vanity') {
       const resolved = await this.resolveVanity(parsed.vanity);
       return {
@@ -206,7 +209,8 @@ export class SteamService {
       return {
         status: 'NOT_CONFIGURED',
         account: await getSteamAccountDetail(this.db, steamId64),
-        error: 'STEAM_API_KEY is not configured on the backend; current profile data cannot be refreshed.',
+        error:
+          'STEAM_API_KEY is not configured on the backend; current profile data cannot be refreshed.',
         checkedAt,
       };
     }
@@ -271,7 +275,11 @@ export class SteamService {
 
   toCurrent(
     steamId64: string | null,
-    account: { current_display_name: string | null; last_checked_at: string | null; profile_status: string } | null,
+    account: {
+      current_display_name: string | null;
+      last_checked_at: string | null;
+      profile_status: string;
+    } | null,
   ): SteamCurrent | null {
     if (!steamId64) return null;
     return {

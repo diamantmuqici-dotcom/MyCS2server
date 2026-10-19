@@ -13,19 +13,8 @@ import {
 } from '@dardania/shared';
 import type { Db } from '../client.js';
 import { parseJson, stringifyJson } from '../json.js';
-import {
-  CASE_SELECT,
-  mapBanEvent,
-  mapCase,
-  mapCaseRelation,
-  mapUnbanEvent,
-} from '../mappers.js';
-import type {
-  BanEventRow,
-  CountRow,
-  ModerationCaseRow,
-  UnbanEventRow,
-} from '../rows.js';
+import { CASE_SELECT, mapBanEvent, mapCase, mapCaseRelation, mapUnbanEvent } from '../mappers.js';
+import type { BanEventRow, CountRow, ModerationCaseRow, UnbanEventRow } from '../rows.js';
 import { listCaseAuditTrail, recordAuditEvent } from './audit.js';
 import { getGuildConfiguration } from './guilds.js';
 
@@ -42,9 +31,10 @@ export async function nextSequence(db: Db, name: string): Promise<number> {
      ON CONFLICT (name) DO UPDATE SET value = counters.value + 1`,
     [name],
   );
-  const row = await db.get<{ value: number | string }>('SELECT value FROM counters WHERE name = ?', [
-    name,
-  ]);
+  const row = await db.get<{ value: number | string }>(
+    'SELECT value FROM counters WHERE name = ?',
+    [name],
+  );
   return Number(row?.value ?? 1);
 }
 
@@ -129,8 +119,7 @@ export async function createModerationCase(
       stringifyJson(input.attributionEvidence),
       input.steamId64 ?? null,
       input.steamNameAtEvent ?? null,
-      input.steamProfileUrlAtEvent ??
-        (input.steamId64 ? steamProfileUrl(input.steamId64) : null),
+      input.steamProfileUrlAtEvent ?? (input.steamId64 ? steamProfileUrl(input.steamId64) : null),
       input.steamNameSource ?? null,
       input.expiresAt ?? null,
       input.discordMessageId ?? null,
@@ -178,7 +167,9 @@ export async function loadRelatedCases(
 ): Promise<Map<string, ReturnType<typeof mapCaseRelation>[]>> {
   const result = new Map<string, ReturnType<typeof mapCaseRelation>[]>();
   if (rows.length === 0) return result;
-  const ids = [...new Set(rows.flatMap((row) => [row.id, row.related_case_id]).filter(Boolean))] as string[];
+  const ids = [
+    ...new Set(rows.flatMap((row) => [row.id, row.related_case_id]).filter(Boolean)),
+  ] as string[];
   if (ids.length === 0) return result;
   const placeholders = ids.map(() => '?').join(', ');
   const linked = await db.all<ModerationCaseRow>(
@@ -318,10 +309,10 @@ export async function getCaseDetail(
   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrRef);
   const row = isUuid
     ? await getCaseRowById(db, idOrRef)
-    : (await db.get<ModerationCaseRow>(`${CASE_SELECT} WHERE c.guild_id = ? AND c.case_ref = ?`, [
+    : await db.get<ModerationCaseRow>(`${CASE_SELECT} WHERE c.guild_id = ? AND c.case_ref = ?`, [
         guildId,
         idOrRef.trim().toUpperCase(),
-      ]));
+      ]);
   if (!row || row.guild_id !== guildId) return null;
   const relations = await loadRelatedCases(db, [row]);
   const banRows = await db.all<BanEventRow>('SELECT * FROM ban_events WHERE case_id = ?', [row.id]);
@@ -436,10 +427,9 @@ export async function recordBanEvent(
 
   try {
     return await db.transaction(async (tx) => {
-      const duplicate = await tx.get<BanEventRow>(
-        'SELECT * FROM ban_events WHERE dedupe_key = ?',
-        [input.dedupeKey],
-      );
+      const duplicate = await tx.get<BanEventRow>('SELECT * FROM ban_events WHERE dedupe_key = ?', [
+        input.dedupeKey,
+      ]);
       if (duplicate) {
         const existingCase = await getCaseById(tx, duplicate.case_id);
         if (existingCase) return { case: existingCase, duplicate: true, relatedCaseRef: null };
@@ -737,10 +727,7 @@ export async function correctCaseFields(
   if (assignments.length === 0) return getCaseById(db, input.caseId);
   assignments.push('updated_at = ?');
   params.push(now, input.caseId);
-  await db.run(
-    `UPDATE moderation_cases SET ${assignments.join(', ')} WHERE id = ?`,
-    params,
-  );
+  await db.run(`UPDATE moderation_cases SET ${assignments.join(', ')} WHERE id = ?`, params);
   await recordAuditEvent(
     db,
     {

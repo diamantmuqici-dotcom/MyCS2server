@@ -38,7 +38,8 @@ function casesEmbed(
     title,
     result.items.length === 0
       ? 'No moderation records matched. Nothing is invented when the history is empty.'
-      : note ?? `${result.total} record(s) found. Historical identity snapshots are shown as recorded.`,
+      : (note ??
+          `${result.total} record(s) found. Historical identity snapshots are shown as recorded.`),
   );
   for (const item of result.items) {
     embed.addFields({
@@ -50,7 +51,9 @@ function casesEmbed(
         (item.reason ? `Reason: ${truncate(item.reason, 180)}` : 'No reason recorded.'),
     });
   }
-  embed.setFooter({ text: `${BRAND.name} • page ${result.page}/${Math.max(result.totalPages, 1)} • ${result.total} total` });
+  embed.setFooter({
+    text: `${BRAND.name} • page ${result.page}/${Math.max(result.totalPages, 1)} • ${result.total} total`,
+  });
   return embed;
 }
 
@@ -63,7 +66,10 @@ export async function handleModlog(
     const guild = requireGuild(interaction);
     const count = interaction.options.getInteger('count') ?? 10;
     const result = await ctx.api.listCases({ guildId: guild.id, pageSize: count });
-    await replyWithEmbeds(interaction, casesEmbed('Moderation log', result, `The ${result.items.length} most recent case(s).`));
+    await replyWithEmbeds(
+      interaction,
+      casesEmbed('Moderation log', result, `The ${result.items.length} most recent case(s).`),
+    );
   } catch (error) {
     await showError(interaction, error, ctx);
   }
@@ -84,7 +90,10 @@ export async function handleCase(
         name: 'Timeline',
         value: truncate(
           detail.events
-            .map((event) => `${event.kind} · ${formatUtc(event.occurredAt)} · ${event.moderator.nameAtEvent ?? 'unattributed'}`)
+            .map(
+              (event) =>
+                `${event.kind} · ${formatUtc(event.occurredAt)} · ${event.moderator.nameAtEvent ?? 'unattributed'}`,
+            )
             .join('\n'),
           1024,
         ),
@@ -93,7 +102,9 @@ export async function handleCase(
     if (detail.relatedCases.length > 0) {
       embed.addFields({
         name: 'Related cases',
-        value: detail.relatedCases.map((relation) => `${relation.caseRef} (${relation.actionType}, ${relation.status})`).join('\n'),
+        value: detail.relatedCases
+          .map((relation) => `${relation.caseRef} (${relation.actionType}, ${relation.status})`)
+          .join('\n'),
       });
     }
     if (detail.auditTrail.length > 0) {
@@ -177,9 +188,17 @@ export async function handleClearWarnings(
 
     await replyWithEmbeds(
       interaction,
-      baseEmbed('Warnings cleared', `Cleared ${result.warnings.length} warning(s) for <@${user.id}>.`).addFields(
+      baseEmbed(
+        'Warnings cleared',
+        `Cleared ${result.warnings.length} warning(s) for <@${user.id}>.`,
+      ).addFields(
         { name: 'Reason', value: reason },
-        { name: 'Record', value: outcome.queued ? 'Queued locally and will be retried.' : 'Recorded in the case history.' },
+        {
+          name: 'Record',
+          value: outcome.queued
+            ? 'Queued locally and will be retried.'
+            : 'Recorded in the case history.',
+        },
       ),
     );
   } catch (error) {
@@ -228,15 +247,26 @@ export async function handleBans(
       const rawId = interaction.options.getString('user-id');
       const targetId = user?.id ?? rawId?.trim();
       if (!targetId) throw new UserFacingError('Provide either user or user-id.');
-      if (!/^\d{17,20}$/.test(targetId)) throw new UserFacingError('user-id must be a numeric Discord snowflake.');
+      if (!/^\d{17,20}$/.test(targetId))
+        throw new UserFacingError('user-id must be a numeric Discord snowflake.');
       const [cases, warnings] = await Promise.all([
-        ctx.api.listCases({ guildId: guild.id, targetDiscordId: targetId, page, pageSize: PAGE_SIZE }),
+        ctx.api.listCases({
+          guildId: guild.id,
+          targetDiscordId: targetId,
+          page,
+          pageSize: PAGE_SIZE,
+        }),
         ctx.api.getWarnings(guild.id, targetId).catch(() => ({ warnings: [] })),
       ]);
       const embed = casesEmbed(`History for ${user?.tag ?? targetId}`, cases);
       const activeBans = cases.items.filter((item) => item.banStatus === 'ACTIVE');
       embed.addFields(
-        { name: 'Active bans (this page)', value: activeBans.length ? activeBans.map((item) => item.caseRef).join(', ') : 'None on this page' },
+        {
+          name: 'Active bans (this page)',
+          value: activeBans.length
+            ? activeBans.map((item) => item.caseRef).join(', ')
+            : 'None on this page',
+        },
         { name: 'Active warnings', value: String(warnings.warnings.length) },
       );
       await replyWithEmbeds(interaction, embed);
@@ -322,7 +352,12 @@ export async function handleUserinfo(
         value:
           cases.items.length === 0
             ? 'No moderation records.'
-            : truncate(cases.items.map((item) => `${item.caseRef} · ${item.actionType} · ${item.status}`).join('\n'), 1024),
+            : truncate(
+                cases.items
+                  .map((item) => `${item.caseRef} · ${item.actionType} · ${item.status}`)
+                  .join('\n'),
+                1024,
+              ),
       },
     );
     await replyWithEmbeds(interaction, embed);
@@ -346,7 +381,11 @@ export async function handleServerinfo(
       { name: 'Members', value: String(guild.memberCount), inline: true },
       { name: 'Channels', value: String(guild.channels.cache.size), inline: true },
       { name: 'Roles', value: String(guild.roles.cache.size), inline: true },
-      { name: 'Boosts', value: `${guild.premiumSubscriptionCount ?? 0} (tier ${guild.premiumTier})`, inline: true },
+      {
+        name: 'Boosts',
+        value: `${guild.premiumSubscriptionCount ?? 0} (tier ${guild.premiumTier})`,
+        inline: true,
+      },
       { name: 'Created', value: formatUtc(guild.createdAt.toISOString()), inline: true },
       { name: 'Server ID', value: `\`${guild.id}\`` },
     );
@@ -371,9 +410,13 @@ export async function handleStaffHelp(
     embed.addFields(
       {
         name: 'Moderation',
-        value: '`/ban` `/unban` `/kick` `/timeout` `/untimeout` `/warn` `/warnings` `/clear-warnings` `/purge`',
+        value:
+          '`/ban` `/unban` `/kick` `/timeout` `/untimeout` `/warn` `/warnings` `/clear-warnings` `/purge`',
       },
-      { name: 'Lookup', value: '`/modlog` `/case` `/bans admin|user|steam|case` `/userinfo` `/serverinfo`' },
+      {
+        name: 'Lookup',
+        value: '`/modlog` `/case` `/bans admin|user|steam|case` `/userinfo` `/serverinfo`',
+      },
       { name: 'PC checks', value: '`/pc-check request|assign|status|note|close|history`' },
       { name: 'Steam', value: '`/steam link|profile`' },
       {
@@ -447,15 +490,29 @@ export async function handlePurge(
       source: 'BOT_COMMAND',
       dedupeKey: `purge:cmd:${interaction.id}`,
       attributionStatus: 'VERIFIED',
-      attributionEvidence: { command: 'purge', interactionId: interaction.id, channelId: targetChannel.id },
-      metadata: { channelId: targetChannel.id, requested: amount, deleted, filteredByUserId: user?.id ?? null },
+      attributionEvidence: {
+        command: 'purge',
+        interactionId: interaction.id,
+        channelId: targetChannel.id,
+      },
+      metadata: {
+        channelId: targetChannel.id,
+        requested: amount,
+        deleted,
+        filteredByUserId: user?.id ?? null,
+      },
     });
 
     await replyWithEmbeds(
       interaction,
-      baseEmbed('Purge complete', `Deleted **${deleted}** message(s) in <#${targetChannel.id}>.`).addFields({
+      baseEmbed(
+        'Purge complete',
+        `Deleted **${deleted}** message(s) in <#${targetChannel.id}>.`,
+      ).addFields({
         name: 'Record',
-        value: outcome.queued ? 'Queued locally and will be retried.' : 'Recorded in the moderation case history.',
+        value: outcome.queued
+          ? 'Queued locally and will be retried.'
+          : 'Recorded in the moderation case history.',
       }),
     );
   } catch (error) {

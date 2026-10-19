@@ -9,7 +9,7 @@ import type {
 import type { Db } from '../client.js';
 import { mapPcCheck, mapPcCheckNote } from '../mappers.js';
 import type { CountRow, PcCheckNoteRow, PcCheckRow } from '../rows.js';
-import { caseRefForNumber, nextSequence } from './cases.js';
+import { nextSequence } from './cases.js';
 
 export interface CreatePcCheckInput {
   guildId: string;
@@ -89,7 +89,9 @@ export async function updatePcCheck(
   },
   now: string,
 ): Promise<PcCheckDto | null> {
-  const existing = await db.get<PcCheckRow>('SELECT * FROM pc_check_cases WHERE id = ?', [input.id]);
+  const existing = await db.get<PcCheckRow>('SELECT * FROM pc_check_cases WHERE id = ?', [
+    input.id,
+  ]);
   if (!existing) return null;
   const assignments: string[] = [];
   const params: (string | null)[] = [];

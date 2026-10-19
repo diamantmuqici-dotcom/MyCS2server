@@ -246,16 +246,12 @@ export async function registerAuthRoutes(
     },
   );
 
-  app.get(
-    '/me',
-    { preHandler: guards.authenticate },
-    async (request: FastifyRequest) => {
-      const auth = request.auth;
-      if (!auth) throw forbidden();
-      const sessionUser: SessionUserDto = auth.sessionUser;
-      return { sessionUser };
-    },
-  );
+  app.get('/me', { preHandler: guards.authenticate }, async (request: FastifyRequest) => {
+    const auth = request.auth;
+    if (!auth) throw forbidden();
+    const sessionUser: SessionUserDto = auth.sessionUser;
+    return { sessionUser };
+  });
 
   app.post('/logout', async (request: FastifyRequest, reply: FastifyReply) => {
     const token = request.cookies['de_session'];

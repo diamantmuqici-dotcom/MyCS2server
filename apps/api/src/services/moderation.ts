@@ -1,9 +1,4 @@
-import {
-  badRequest,
-  forbidden,
-  notFound,
-  serviceUnavailable,
-} from '../errors.js';
+import { badRequest, forbidden, notFound, serviceUnavailable } from '../errors.js';
 import type { Db } from '@dardania/db';
 import {
   createModerationCase,
@@ -140,7 +135,11 @@ export class ModerationService {
       metadata: payload.metadata ?? null,
     };
 
-    let result: { case: { id: string; caseRef: string }; duplicate: boolean; relatedCaseRef: string | null };
+    let result: {
+      case: { id: string; caseRef: string };
+      duplicate: boolean;
+      relatedCaseRef: string | null;
+    };
 
     switch (payload.actionType) {
       case 'BAN':
@@ -167,7 +166,11 @@ export class ModerationService {
         );
         break;
       case 'WARN': {
-        const warning = await recordWarning(this.db, { ...base, dedupeKey: payload.dedupeKey }, now);
+        const warning = await recordWarning(
+          this.db,
+          { ...base, dedupeKey: payload.dedupeKey },
+          now,
+        );
         await recordAuditEvent(
           this.db,
           {

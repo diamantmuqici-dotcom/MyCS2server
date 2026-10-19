@@ -61,7 +61,9 @@ export function SteamPage() {
             {data.items.length === 0 ? (
               <EmptyState
                 icon="steam"
-                title={query ? 'No Steam account matches that search' : 'No Steam accounts tracked yet'}
+                title={
+                  query ? 'No Steam account matches that search' : 'No Steam accounts tracked yet'
+                }
                 description="Accounts are created when the bot resolves a Steam profile during a moderation action, PC check or /steam link."
               />
             ) : (
@@ -87,11 +89,15 @@ export function SteamPage() {
                           >
                             {account.steamId64}
                           </Link>
-                          <span className="cell-sub">{account.nameHistory.length} name observations</span>
+                          <span className="cell-sub">
+                            {account.nameHistory.length} name observations
+                          </span>
                         </td>
                         <td>{account.currentDisplayName ?? 'Unavailable'}</td>
                         <td>
-                          <span className={`badge badge-${account.profileStatus === 'PUBLIC' ? 'success' : account.profileStatus === 'PRIVATE' ? 'warning' : 'neutral'}`}>
+                          <span
+                            className={`badge badge-${account.profileStatus === 'PUBLIC' ? 'success' : account.profileStatus === 'PRIVATE' ? 'warning' : 'neutral'}`}
+                          >
                             {account.profileStatus}
                           </span>
                         </td>
@@ -121,14 +127,15 @@ export function SteamPage() {
         )}
 
         <div className="note">
-          <strong>Why names are separate from identity:</strong> a Steam display name can be changed at
-          any time, so writing the latest name back into an old case would falsify the record. The
-          dashboard shows the event snapshot and the current observation side by side, and keeps a
-          timestamped name history instead of overwriting anything.
+          <strong>Why names are separate from identity:</strong> a Steam display name can be changed
+          at any time, so writing the latest name back into an old case would falsify the record.
+          The dashboard shows the event snapshot and the current observation side by side, and keeps
+          a timestamped name history instead of overwriting anything.
         </div>
         {data && data.items.length > 0 && (
           <p className="small muted">
-            Oldest visible observation: {formatDateTime(data.items[data.items.length - 1]?.firstSeenAt)}
+            Oldest visible observation:{' '}
+            {formatDateTime(data.items[data.items.length - 1]?.firstSeenAt)}
           </p>
         )}
       </div>

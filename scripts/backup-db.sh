@@ -1,30 +1,37 @@
 #!/usr/bin/env bash
-# Dardania | Elite — PostgreSQL backup helper.
-# Usage: DATABASE_URL=postgres://... BACKUP_DIR=./backups ./scripts/backup-db.sh
-# Retains 14 daily compressed dumps. Never commit backups/ (gitignored).
+# Creates a consistent backup of DATABASE_URL.
+#   - sqlite:  uses VACUUM INTO through Node's built-in SQLite driver
+#   - postgres: uses pg_dump (custom format)
+# Backups land in ./backups/<timestamp>/ and are gitignored.
 set -euo pipefail
 
-if [[ -z "${DATABASE_URL:-}" ]]; then
+cd "$(dirname "$0")/.."
+set -a
+[ -f .env ] && . ./.env
+set +a
+
+if [ -z "${DATABASE_URL:-}" ]; then
   echo "DATABASE_URL is not set." >&2
   exit 1
 fi
-if [[ "$DATABASE_URL" != postgres://* && "$DATABASE_URL" != postgresql://* ]]; then
-  echo "Backups via pg_dump require a PostgreSQL DATABASE_URL." >&2
-  exit 1
-fi
-if ! command -v pg_dump >/dev/null 2>&1; then
-  echo "pg_dump is not installed." >&2
-  exit 1
-fi
 
-BACKUP_DIR="${BACKUP_DIR:-./backups}"
-mkdir -p "$BACKUP_DIR"
-STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-TARGET="$BACKUP_DIR/dardania-elite-$STAMP.sql.gz"
+stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+outdir="backups/$stamp"
+mkdir -p "$outdir"
 
-pg_dump --no-owner --no-privileges "$DATABASE_URL" | gzip -9 > "$TARGET.tmp"
-mv "$TARGET.tmp" "$TARGET"
-echo "backup written: $TARGET"
+case "$DATABASE_URL" in
+  sqlite:*)
+    target="$outdir/database.sqlite"
+    DATABASE_URL="$DATABASE_URL" TARGET="$target" node --experimental-sqlite scripts/backup-sqlite.mjs
+    ;;
+  postgres://*|postgresql://*)
+    pg_dump --format=custom --no-owner --file "$outdir/database.dump" "$DATABASE_URL"
+    ;;
+  *)
+    echo "Unsupported DATABASE_URL scheme." >&2
+    exit 1
+    ;;
+esac
 
-# Keep the 14 newest backups.
-ls -1t "$BACKUP_DIR"/dardania-elite-*.sql.gz 2>/dev/null | tail -n +15 | xargs -r rm --
+echo "Backup written to $outdir"
+ls -lh "$outdir"

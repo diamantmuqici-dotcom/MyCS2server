@@ -36,7 +36,10 @@ export const RULES: RuleSection[] = [
   },
   {
     id: 'cheating',
-    title: { en: 'Cheating and third-party software', sq: 'Mashtrimi dhe softueri i palës së tretë' },
+    title: {
+      en: 'Cheating and third-party software',
+      sq: 'Mashtrimi dhe softueri i palës së tretë',
+    },
     items: [
       {
         en: 'Any cheat, aimbot, wallhack, triggerbot, macro or external assistance is a permanent ban on first confirmed offence.',
@@ -58,7 +61,10 @@ export const RULES: RuleSection[] = [
   },
   {
     id: 'exploits',
-    title: { en: 'Exploits, bugs and match integrity', sq: 'Shfrytëzimi i gabimeve dhe integriteti i ndeshjes' },
+    title: {
+      en: 'Exploits, bugs and match integrity',
+      sq: 'Shfrytëzimi i gabimeve dhe integriteti i ndeshjes',
+    },
     items: [
       {
         en: 'Abusing map bugs, out-of-bounds positions, or economy exploits is forbidden. Report bugs to staff instead.',

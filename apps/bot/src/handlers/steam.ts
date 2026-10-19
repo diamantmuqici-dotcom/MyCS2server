@@ -24,8 +24,7 @@ export async function handleSteamLink(
     const user = interaction.options.getUser('user', true);
     const input = interaction.options.getString('steam', true).trim();
     const verification = (interaction.options.getString('verification') ?? 'UNVERIFIED') as
-      | 'VERIFIED'
-      | 'UNVERIFIED';
+      'VERIFIED' | 'UNVERIFIED';
 
     const resolved = await ctx.api.resolveSteam(input);
     if (!resolved.steamId64) {
@@ -54,8 +53,15 @@ export async function handleSteamLink(
     });
     await replyWithEmbeds(
       interaction,
-      baseEmbed('Steam account linked', `<@${user.id}> is now linked to \`${resolved.steamId64}\`.`).addFields(
-        { name: 'Current Steam name', value: account?.currentDisplayName ?? 'Unavailable', inline: true },
+      baseEmbed(
+        'Steam account linked',
+        `<@${user.id}> is now linked to \`${resolved.steamId64}\`.`,
+      ).addFields(
+        {
+          name: 'Current Steam name',
+          value: account?.currentDisplayName ?? 'Unavailable',
+          inline: true,
+        },
         { name: 'Verification', value: verification, inline: true },
         { name: 'Profile', value: `https://steamcommunity.com/profiles/${resolved.steamId64}` },
       ),
@@ -90,9 +96,19 @@ export async function handleSteamProfile(
     ).addFields(
       { name: 'Current name', value: current.currentDisplayName ?? 'Unavailable', inline: true },
       { name: 'Profile status', value: current.profileStatus, inline: true },
-      { name: 'Linked Discord', value: current.linkedDiscordUserIds.length ? current.linkedDiscordUserIds.map((id) => `<@${id}>`).join(', ') : 'Not linked', inline: true },
+      {
+        name: 'Linked Discord',
+        value: current.linkedDiscordUserIds.length
+          ? current.linkedDiscordUserIds.map((id) => `<@${id}>`).join(', ')
+          : 'Not linked',
+        inline: true,
+      },
       { name: 'Moderation cases', value: String(current.moderationCaseCount), inline: true },
-      { name: 'Last checked', value: current.lastCheckedAt ? formatUtc(current.lastCheckedAt) : 'Never', inline: true },
+      {
+        name: 'Last checked',
+        value: current.lastCheckedAt ? formatUtc(current.lastCheckedAt) : 'Never',
+        inline: true,
+      },
     );
     if (current.nameHistory.length > 0) {
       embed.addFields({
@@ -113,7 +129,8 @@ export async function handleSteamProfile(
     if (account && snapshot && account.currentDisplayName !== snapshot.currentDisplayName) {
       embed.addFields({
         name: 'Refresh note',
-        value: 'The live Steam refresh returned a different name than the cached observation. Both observations are retained.',
+        value:
+          'The live Steam refresh returned a different name than the cached observation. Both observations are retained.',
       });
     }
     await replyWithEmbeds(interaction, embed);

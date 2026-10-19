@@ -25,8 +25,9 @@ export function Overview() {
         title="Overview"
         description={
           <>
-            Signed in as <strong>{session?.username}</strong> · {session?.accessLevel.replace('_', '-')}{' '}
-            access · guild <span className="mono">{session?.guildId || 'not configured'}</span>
+            Signed in as <strong>{session?.username}</strong> ·{' '}
+            {session?.accessLevel.replace('_', '-')} access · guild{' '}
+            <span className="mono">{session?.guildId || 'not configured'}</span>
           </>
         }
         actions={<RefreshButton onClick={reload} busy={loading} />}
@@ -42,8 +43,8 @@ export function Overview() {
               <Icon name="alert" size={16} />
               <span>
                 Demo seed data is present in this database (records with source{' '}
-                <span className="mono">DEMO_SEED</span>). Numbers below include those records — do not
-                present them as real moderation activity.
+                <span className="mono">DEMO_SEED</span>). Numbers below include those records — do
+                not present them as real moderation activity.
               </span>
             </Alert>
           )}
@@ -64,7 +65,11 @@ export function Overview() {
               hint="Audit log could not confirm"
             />
             <StatCard label="Warnings" value={data.totals.warnings} hint="Warning records" />
-            <StatCard label="Open PC checks" value={data.pcChecks.open} hint="Requested or in progress" />
+            <StatCard
+              label="Open PC checks"
+              value={data.pcChecks.open}
+              hint="Requested or in progress"
+            />
             <StatCard label="PC checks completed" value={data.pcChecks.completed} />
             <StatCard
               label="Announcements"
@@ -78,7 +83,9 @@ export function Overview() {
               <div className="card-header">
                 <div>
                   <div className="card-title">Recent cases</div>
-                  <div className="card-subtitle">Newest records first — identities are historical snapshots.</div>
+                  <div className="card-subtitle">
+                    Newest records first — identities are historical snapshots.
+                  </div>
                 </div>
                 <Link className="btn btn-ghost btn-small" to="/dashboard/cases">
                   All cases <Icon name="chevronRight" size={14} />
@@ -209,8 +216,8 @@ export function Overview() {
 
       {error instanceof ApiError && error.status === 403 && (
         <Alert tone="warning">
-          Your access level cannot read moderation history. PC Checker accounts are scoped to PC-check
-          cases.
+          Your access level cannot read moderation history. PC Checker accounts are scoped to
+          PC-check cases.
         </Alert>
       )}
     </div>

@@ -1,59 +1,66 @@
-import 'dotenv/config';
-import { loadApiEnv } from '@dardania/shared/env';
-import { createDb, getActiveAccess, grantAccess, recordAuditEvent } from '@dardania/db';
-
+#!/usr/bin/env tsx
 /**
- * Grants dashboard OWNER access to a Discord user ID.
+ * Grants dashboard access to a Discord user ID without editing environment
+ * variables or redeploying. The grant is written to the database, audited by the
+ * API, and can be revoked from the dashboard.
  *
- * The environment allowlist (DASHBOARD_OWNER_DISCORD_IDS) always applies and is
- * the recommended path; this script exists for bootstrapping without editing
- * production secrets.
- *
- * Usage: npm run db:promote-owner -- <discordUserId>
+ * Usage: npm run db:promote-owner -- <discord-user-id> [--level CO_OWNER]
  */
-async function main(): Promise<void> {
-  const userId = process.argv[2]?.trim();
-  if (!userId || !/^\d{17,20}$/.test(userId)) {
-    throw new Error('Usage: npm run db:promote-owner -- <discordUserId> (17-20 digit snowflake)');
-  }
-  const env = loadApiEnv();
-  if (!env.discord.guildId) throw new Error('DISCORD_GUILD_ID must be configured.');
-  const db = await createDb(env.databaseUrl);
-  try {
-    const now = new Date().toISOString();
-    const previous = await getActiveAccess(db, env.discord.guildId, userId);
-    const granted = await grantAccess(
-      db,
-      {
-        guildId: env.discord.guildId,
-        userId,
-        level: 'OWNER',
-        grantedBy: 'promote-owner-script',
-        note: 'Bootstrap grant from scripts/promote-owner.ts',
-      },
-      now,
-    );
-    await recordAuditEvent(
-      db,
-      {
-        guildId: env.discord.guildId,
-        actorType: 'SYSTEM',
-        action: 'access.bootstrap_owner',
-        entityType: 'dashboard_access',
-        entityId: userId,
-        summary: `OWNER dashboard access bootstrap-granted to ${userId}.`,
-        before: previous ? { level: previous.level } : null,
-        after: { level: granted.level },
-      },
-      now,
-    );
-    console.log(`[access] ${userId} now has ${granted.level} dashboard access in ${env.discord.guildId}.`);
-  } finally {
-    await db.close();
-  }
+import 'dotenv/config';
+import { createDb, grantAccess, listActiveAccess, upsertGuild } from '@dardania/db';
+import { nowIso, isAccessLevel, type AccessLevel } from '@dardania/shared';
+import { loadApiEnv } from '@dardania/shared/env';
+
+const env = loadApiEnv();
+if (!env.discord.guildId) {
+  console.error('DISCORD_GUILD_ID must be set.');
+  process.exit(1);
 }
 
-main().catch((error: unknown) => {
-  console.error('[fatal] promote-owner failed:', error);
+const args = process.argv.slice(2);
+const userId = args.find((arg) => /^\d{17,20}$/.test(arg));
+const levelArg = args.find((arg) => arg.startsWith('--level='))?.split('=')[1];
+const level: AccessLevel = isAccessLevel(levelArg) ? levelArg : 'OWNER';
+
+if (!userId) {
+  console.error(
+    'Usage: npm run db:promote-owner -- <discord-user-id> [--level=OWNER|CO_OWNER|PC_CHECKER]',
+  );
+  const existing = await (async () => {
+    const db = await createDb(env.databaseUrl);
+    try {
+      return await listActiveAccess(db, env.discord.guildId!);
+    } finally {
+      await db.close();
+    }
+  })();
+  console.error(
+    existing.length === 0
+      ? 'No database grants exist yet. The environment allowlist is still enforced.'
+      : `Existing grants: ${existing.map((row) => `${row.userDiscordId} (${row.level})`).join(', ')}`,
+  );
   process.exit(1);
-});
+}
+
+const db = await createDb(env.databaseUrl);
+try {
+  const now = nowIso();
+  await upsertGuild(db, { id: env.discord.guildId, name: 'Dardania | Elite' }, now);
+  const grant = await grantAccess(
+    db,
+    {
+      guildId: env.discord.guildId,
+      userId,
+      level,
+      grantedBy: 'cli:promote-owner',
+      note: 'Granted from the local CLI.',
+    },
+    now,
+  );
+  console.log(`Granted ${grant.level} dashboard access to ${grant.userDiscordId}.`);
+  console.log(
+    'Remove this grant from the dashboard (Settings → Access) when it is no longer needed.',
+  );
+} finally {
+  await db.close();
+}

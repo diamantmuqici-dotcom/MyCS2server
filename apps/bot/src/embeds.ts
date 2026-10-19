@@ -1,5 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
-import { BRAND, BRAND_COLOR_DISCORD, formatUtc, type ModerationCaseDto, type PcCheckDto } from '@dardania/shared';
+import {
+  BRAND,
+  BRAND_COLOR_DISCORD,
+  formatUtc,
+  type ModerationCaseDto,
+  type PcCheckDto,
+} from '@dardania/shared';
 
 export function baseEmbed(title?: string, description?: string): EmbedBuilder {
   const embed = new EmbedBuilder().setColor(BRAND_COLOR_DISCORD);
@@ -78,8 +84,16 @@ export function pcCheckEmbed(pcCheck: PcCheckDto): EmbedBuilder {
     { name: 'Status', value: pcCheck.status, inline: true },
     { name: 'Outcome', value: pcCheck.outcome ?? 'Pending', inline: true },
     { name: 'Target', value: `<@${pcCheck.targetDiscordUserId}>`, inline: true },
-    { name: 'Requested by', value: pcCheck.requestedBy ? `<@${pcCheck.requestedBy}>` : 'Unknown', inline: true },
-    { name: 'Assigned to', value: pcCheck.assignedTo ? `<@${pcCheck.assignedTo}>` : 'Unassigned', inline: true },
+    {
+      name: 'Requested by',
+      value: pcCheck.requestedBy ? `<@${pcCheck.requestedBy}>` : 'Unknown',
+      inline: true,
+    },
+    {
+      name: 'Assigned to',
+      value: pcCheck.assignedTo ? `<@${pcCheck.assignedTo}>` : 'Unassigned',
+      inline: true,
+    },
     {
       name: 'Steam',
       value: pcCheck.steamId64

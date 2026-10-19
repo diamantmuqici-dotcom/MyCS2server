@@ -11,11 +11,7 @@ export interface CreateSessionInput {
   loginSource?: 'oauth' | 'allowlist' | 'dev';
 }
 
-export async function createSession(
-  db: Db,
-  input: CreateSessionInput,
-  now: string,
-): Promise<void> {
+export async function createSession(db: Db, input: CreateSessionInput, now: string): Promise<void> {
   await db.run(
     `INSERT INTO sessions
       (id, user_id, csrf_token, created_at, expires_at, last_seen_at, ip_hash, user_agent, login_source)

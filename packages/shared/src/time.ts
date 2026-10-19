@@ -25,6 +25,9 @@ export function formatUtc(iso: string | null | undefined): string {
 }
 
 /** Discord relative timestamp, e.g. <t:1700000000:R>. */
-export function discordTimestamp(iso: string, style: 'f' | 'F' | 'R' | 'd' | 'D' | 't' | 'T' = 'f'): string {
+export function discordTimestamp(
+  iso: string,
+  style: 'f' | 'F' | 'R' | 'd' | 'D' | 't' | 'T' = 'f',
+): string {
   return `<t:${Math.floor(new Date(iso).getTime() / 1000)}:${style}>`;
 }

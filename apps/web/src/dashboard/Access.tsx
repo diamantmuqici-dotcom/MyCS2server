@@ -66,8 +66,9 @@ export function Access() {
         />
 
         <div className="note note-owner">
-          <strong>Discord roles never grant dashboard access.</strong> Only explicit Discord user IDs —
-          from the environment allowlist or the grants below — can sign in and read moderation history.
+          <strong>Discord roles never grant dashboard access.</strong> Only explicit Discord user
+          IDs — from the environment allowlist or the grants below — can sign in and read moderation
+          history.
         </div>
 
         {feedback && <Alert tone="success">{feedback}</Alert>}
@@ -78,7 +79,8 @@ export function Access() {
             <div>
               <div className="card-title">Grant access</div>
               <div className="card-subtitle">
-                PC_CHECKER: PC checks only · CO_OWNER: full history · OWNER: everything, including this page.
+                PC_CHECKER: PC checks only · CO_OWNER: full history · OWNER: everything, including
+                this page.
               </div>
             </div>
           </div>
@@ -114,7 +116,10 @@ export function Access() {
             </Field>
           </div>
           <div className="row" style={{ marginTop: '1rem' }}>
-            <Button onClick={() => void grant()} disabled={busy || !/^\d{17,20}$/.test(userId.trim())}>
+            <Button
+              onClick={() => void grant()}
+              disabled={busy || !/^\d{17,20}$/.test(userId.trim())}
+            >
               {busy ? 'Granting…' : 'Grant access'}
             </Button>
           </div>
@@ -187,9 +192,9 @@ export function Access() {
                               description={
                                 <>
                                   Revoke dashboard access for{' '}
-                                  <span className="mono">{entry.userDiscordId}</span>? Existing sessions
-                                  are destroyed on their next request. This is recorded in the audit
-                                  trail.
+                                  <span className="mono">{entry.userDiscordId}</span>? Existing
+                                  sessions are destroyed on their next request. This is recorded in
+                                  the audit trail.
                                 </>
                               }
                               onConfirm={async () => {

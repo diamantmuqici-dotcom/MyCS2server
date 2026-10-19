@@ -39,8 +39,8 @@ export function PcChecks() {
 
         {session?.accessLevel === 'PC_CHECKER' && (
           <div className="note">
-            You have scoped PC Checker access. Owner-only notes and moderation history are not visible
-            for this account.
+            You have scoped PC Checker access. Owner-only notes and moderation history are not
+            visible for this account.
           </div>
         )}
 
@@ -116,7 +116,10 @@ export function PcChecks() {
                     {data.items.map((item) => (
                       <tr key={item.id}>
                         <td>
-                          <Link className="mono cell-strong" to={`/dashboard/pc-checks/${item.caseRef}`}>
+                          <Link
+                            className="mono cell-strong"
+                            to={`/dashboard/pc-checks/${item.caseRef}`}
+                          >
                             {item.caseRef}
                           </Link>
                         </td>
@@ -128,7 +131,9 @@ export function PcChecks() {
                         </td>
                         <td>
                           {item.outcome ? (
-                            <span className={`badge badge-${item.outcome === 'CLEAN' ? 'success' : item.outcome === 'CHEATING_CONFIRMED' ? 'danger' : 'warning'}`}>
+                            <span
+                              className={`badge badge-${item.outcome === 'CLEAN' ? 'success' : item.outcome === 'CHEATING_CONFIRMED' ? 'danger' : 'warning'}`}
+                            >
                               {item.outcome.replace('_', ' ')}
                             </span>
                           ) : (

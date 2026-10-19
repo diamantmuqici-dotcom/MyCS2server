@@ -52,8 +52,7 @@ function mapSteamSnapshot(row: ModerationCaseRow): SteamSnapshot {
     steamId64: row.steam_id64,
     name: row.steam_name_at_event,
     profileUrl:
-      row.steam_profile_url_at_event ??
-      (row.steam_id64 ? steamProfileUrl(row.steam_id64) : null),
+      row.steam_profile_url_at_event ?? (row.steam_id64 ? steamProfileUrl(row.steam_id64) : null),
     nameSource: row.steam_name_source,
   };
 }
@@ -84,7 +83,10 @@ export function mapCase(
     recordedAt: row.recorded_at,
     source: row.source,
     attributionStatus: row.attribution_status,
-    attributionEvidence: parseJson<Record<string, unknown> | null>(row.attribution_evidence_json, null),
+    attributionEvidence: parseJson<Record<string, unknown> | null>(
+      row.attribution_evidence_json,
+      null,
+    ),
     steamAtEvent: mapSteamSnapshot(row),
     steamCurrent: mapSteamCurrent(row),
     expiresAt: row.expires_at,
@@ -122,7 +124,10 @@ export function mapBanEvent(row: BanEventRow): ModerationEventDto {
   };
 }
 
-export function mapUnbanEvent(row: UnbanEventRow, relatedCaseRef: string | null): ModerationEventDto {
+export function mapUnbanEvent(
+  row: UnbanEventRow,
+  relatedCaseRef: string | null,
+): ModerationEventDto {
   return {
     id: row.id,
     kind: 'UNBAN',

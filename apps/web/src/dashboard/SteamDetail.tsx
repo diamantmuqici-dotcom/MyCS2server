@@ -27,10 +27,11 @@ export function SteamDetail() {
     setFeedback(null);
     setFailure(null);
     try {
-      const result = await mutate<{ status: string; error: string | null; displayName: string | null }>(
-        `/api/dashboard/steam/${encodeURIComponent(steamId64)}/refresh`,
-        { method: 'POST' },
-      );
+      const result = await mutate<{
+        status: string;
+        error: string | null;
+        displayName: string | null;
+      }>(`/api/dashboard/steam/${encodeURIComponent(steamId64)}/refresh`, { method: 'POST' });
       setFeedback(
         result.status === 'OK'
           ? `Steam profile refreshed. Current name: ${result.displayName ?? 'private / unavailable'}.`
@@ -53,7 +54,9 @@ export function SteamDetail() {
         method: 'POST',
         body: { steamId64, discordUserId: discordUserId.trim(), verification },
       });
-      setFeedback('Steam account linked to the Discord user. The link is recorded in the audit trail.');
+      setFeedback(
+        'Steam account linked to the Discord user. The link is recorded in the audit trail.',
+      );
       setDiscordUserId('');
       reload();
     } catch (caught) {
@@ -70,8 +73,8 @@ export function SteamDetail() {
           ← Steam identity
         </Link>
         {loading && !data && <Loading label="Loading Steam account…" />}
-        {error && (
-          error.status === 404 ? (
+        {error &&
+          (error.status === 404 ? (
             <EmptyState
               icon="steam"
               title="Account not observed"
@@ -79,8 +82,7 @@ export function SteamDetail() {
             />
           ) : (
             <ErrorPanel error={error} onRetry={reload} />
-          )
-        )}
+          ))}
 
         {data && (
           <>
@@ -98,7 +100,8 @@ export function SteamDetail() {
                     <Icon name="external" size={14} /> Steam profile
                   </a>
                   <Button size="small" onClick={() => void refresh()} disabled={busy}>
-                    <Icon name="refresh" size={14} /> {busy ? 'Working…' : 'Refresh current profile'}
+                    <Icon name="refresh" size={14} />{' '}
+                    {busy ? 'Working…' : 'Refresh current profile'}
                   </Button>
                 </div>
               }
@@ -183,8 +186,8 @@ export function SteamDetail() {
                     Link account
                   </Button>
                   <p className="field-hint">
-                    Linking does not rewrite past cases. A case keeps the Steam snapshot it was created
-                    with.
+                    Linking does not rewrite past cases. A case keeps the Steam snapshot it was
+                    created with.
                   </p>
                 </div>
               </section>
@@ -200,7 +203,9 @@ export function SteamDetail() {
                 </div>
               </div>
               {data.account.nameHistory.length === 0 ? (
-                <p className="small muted">No names observed yet. Refresh the profile to start tracking.</p>
+                <p className="small muted">
+                  No names observed yet. Refresh the profile to start tracking.
+                </p>
               ) : (
                 <div className="table-wrap">
                   <table className="data" style={{ minWidth: 640 }}>
@@ -225,7 +230,9 @@ export function SteamDetail() {
                           </td>
                           <td className="small mono">{row.source}</td>
                           <td>
-                            <span className={`badge badge-${row.verification === 'VERIFIED' ? 'success' : 'neutral'}`}>
+                            <span
+                              className={`badge badge-${row.verification === 'VERIFIED' ? 'success' : 'neutral'}`}
+                            >
                               {row.verification}
                             </span>
                           </td>

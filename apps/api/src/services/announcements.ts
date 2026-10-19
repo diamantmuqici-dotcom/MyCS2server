@@ -66,7 +66,11 @@ export class AnnouncementService {
   async publicBySlug(slug: string): Promise<PublicAnnouncement> {
     if (!this.guildId) throw notFound('Announcement not found.');
     const announcement = await getAnnouncementBySlug(this.db, slug);
-    if (!announcement || announcement.status !== 'PUBLISHED' || announcement.guildId !== this.guildId) {
+    if (
+      !announcement ||
+      announcement.status !== 'PUBLISHED' ||
+      announcement.guildId !== this.guildId
+    ) {
       throw notFound('Announcement not found.');
     }
     return {
@@ -99,7 +103,9 @@ export class AnnouncementService {
 
   async resolveAuthorNames(items: AnnouncementDto[]): Promise<Map<string, string>> {
     const ids = [
-      ...new Set(items.map((item) => item.authorDiscordId).filter((id): id is string => Boolean(id))),
+      ...new Set(
+        items.map((item) => item.authorDiscordId).filter((id): id is string => Boolean(id)),
+      ),
     ];
     const users = await getUsersByIds(this.db, ids);
     return new Map(users.map((user) => [user.id, user.global_name ?? user.username]));

@@ -75,7 +75,10 @@ export function SectionNote({ children }: { children: ReactNode }) {
 export function EmptyRow({ colSpan, children }: { colSpan: number; children: ReactNode }) {
   return (
     <tr>
-      <td colSpan={colSpan} style={{ textAlign: 'center', padding: '2rem 1rem', color: 'var(--muted)' }}>
+      <td
+        colSpan={colSpan}
+        style={{ textAlign: 'center', padding: '2rem 1rem', color: 'var(--muted)' }}
+      >
         {children}
       </td>
     </tr>

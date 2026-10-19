@@ -37,7 +37,11 @@ export function AuditLog() {
           onSubmit={(event) => {
             event.preventDefault();
             setPage(1);
-            setApplied({ action: action.trim(), actor: actor.trim(), entityType: entityType.trim() });
+            setApplied({
+              action: action.trim(),
+              actor: actor.trim(),
+              entityType: entityType.trim(),
+            });
           }}
         >
           <div className="filter-bar">
@@ -110,7 +114,9 @@ export function AuditLog() {
                         </td>
                         <td className="small">
                           {entry.entityType ?? '—'}
-                          {entry.entityId && <span className="cell-sub mono">{entry.entityId}</span>}
+                          {entry.entityId && (
+                            <span className="cell-sub mono">{entry.entityId}</span>
+                          )}
                         </td>
                         <td className="small" style={{ maxWidth: 420 }}>
                           {entry.summary}

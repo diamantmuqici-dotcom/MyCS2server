@@ -20,8 +20,8 @@ export function Staff() {
         />
         {loading && !data && <Loading label="Loading staff activity…" />}
         {error && <ErrorPanel error={error} onRetry={reload} />}
-        {data && (
-          data.items.length === 0 ? (
+        {data &&
+          (data.items.length === 0 ? (
             <EmptyState
               icon="users"
               title="No attributed actions yet"
@@ -74,8 +74,7 @@ export function Staff() {
                 </tbody>
               </table>
             </div>
-          )
-        )}
+          ))}
       </div>
     </RequireLevel>
   );

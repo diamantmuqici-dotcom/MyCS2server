@@ -35,10 +35,7 @@ export function hasConfiguredRole(
   });
 }
 
-export function isStaffMember(
-  member: GuildMember,
-  config: GuildSettingsDto | null,
-): boolean {
+export function isStaffMember(member: GuildMember, config: GuildSettingsDto | null): boolean {
   if (member.permissions.has(PermissionFlagsBits.Administrator)) return true;
   if (
     member.permissions.has(PermissionFlagsBits.ModerateMembers) ||
@@ -50,10 +47,7 @@ export function isStaffMember(
   return hasConfiguredRole(member, config, STAFF_ROLE_KEYS);
 }
 
-export function isPcStaffMember(
-  member: GuildMember,
-  config: GuildSettingsDto | null,
-): boolean {
+export function isPcStaffMember(member: GuildMember, config: GuildSettingsDto | null): boolean {
   if (isStaffMember(member, config)) return true;
   return hasConfiguredRole(member, config, PC_STAFF_ROLE_KEYS);
 }
@@ -121,10 +115,7 @@ export function hierarchyProblem(
     if (target.id === actor.id) {
       return 'You cannot take action against yourself.';
     }
-    if (
-      target.id === guild.members.me?.id ||
-      target.user.bot && target.id === bot.id
-    ) {
+    if (target.id === guild.members.me?.id || (target.user.bot && target.id === bot.id)) {
       return 'You cannot take action against the bot itself.';
     }
     const actorIsOwner = guild.ownerId === actor.id;

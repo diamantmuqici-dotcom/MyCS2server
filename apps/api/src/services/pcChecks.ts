@@ -153,12 +153,19 @@ export class PcCheckService {
         entityType: 'pc_check_case',
         entityId: existing.id,
         summary: `PC check ${existing.caseRef} updated (${existing.status} → ${updated.status}).`,
-        before: { status: existing.status, assignedTo: existing.assignedTo, outcome: existing.outcome },
+        before: {
+          status: existing.status,
+          assignedTo: existing.assignedTo,
+          outcome: existing.outcome,
+        },
         after: { status: updated.status, assignedTo: updated.assignedTo, outcome: updated.outcome },
       },
       this.now(),
     );
-    if (existing.status !== updated.status && (updated.status === 'COMPLETED' || updated.status === 'CANCELLED')) {
+    if (
+      existing.status !== updated.status &&
+      (updated.status === 'COMPLETED' || updated.status === 'CANCELLED')
+    ) {
       await enqueueDelivery(this.db, {
         topic: 'DISCORD_LOG',
         dedupeKey: `discord-log:pc:${existing.id}:${updated.status.toLowerCase()}`,

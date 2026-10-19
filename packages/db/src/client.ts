@@ -155,7 +155,8 @@ class PostgresDb implements Db {
 
   async transaction<T>(fn: (tx: Db) => Promise<T>): Promise<T> {
     if (this.inTransaction) return fn(this);
-    if (!(this.client instanceof Pool)) throw new Error('Nested transactional client is not a pool');
+    if (!(this.client instanceof Pool))
+      throw new Error('Nested transactional client is not a pool');
     const client = await this.client.connect();
     try {
       await client.query('BEGIN');

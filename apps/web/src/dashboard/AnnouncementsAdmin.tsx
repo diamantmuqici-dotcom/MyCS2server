@@ -8,7 +8,16 @@ import {
 import { useApi } from '../lib/useApi.js';
 import { useMutation } from '../lib/session.js';
 import { buildQuery, ApiError } from '../lib/api.js';
-import { Alert, Button, EmptyState, ErrorPanel, Field, Loading, Modal, Pagination } from '../components/ui.js';
+import {
+  Alert,
+  Button,
+  EmptyState,
+  ErrorPanel,
+  Field,
+  Loading,
+  Modal,
+  Pagination,
+} from '../components/ui.js';
 import { formatDateTime } from '../lib/format.js';
 import { PageHeader, RefreshButton } from './ui.js';
 import { RequireLevel } from './RequireLevel.js';
@@ -66,12 +75,16 @@ export function AnnouncementsAdmin() {
         setFeedback('Draft updated.');
       } else {
         await mutate('/api/dashboard/announcements', { method: 'POST', body: payload });
-        setFeedback('Draft created. Publish it to make it visible on the website and queue the Discord post.');
+        setFeedback(
+          'Draft created. Publish it to make it visible on the website and queue the Discord post.',
+        );
       }
       setEditor(null);
       reload();
     } catch (caught) {
-      setFailure(caught instanceof ApiError ? caught.message : 'The announcement could not be saved.');
+      setFailure(
+        caught instanceof ApiError ? caught.message : 'The announcement could not be saved.',
+      );
     } finally {
       setBusy(false);
     }
@@ -164,7 +177,9 @@ export function AnnouncementsAdmin() {
                 icon="megaphone"
                 title="No announcements yet"
                 description="Create a draft, review it, then publish. Nothing is posted to Discord until a draft is published."
-                action={<Button onClick={() => setEditor(EMPTY_EDITOR)}>Create the first draft</Button>}
+                action={
+                  <Button onClick={() => setEditor(EMPTY_EDITOR)}>Create the first draft</Button>
+                }
               />
             ) : (
               <div className="stack">
@@ -174,14 +189,21 @@ export function AnnouncementsAdmin() {
                       <div>
                         <div className="row" style={{ gap: '0.4rem' }}>
                           <span className="card-title">{item.title}</span>
-                          <span className={`badge badge-${item.status === 'PUBLISHED' ? 'success' : item.status === 'DRAFT' ? 'warning' : 'neutral'}`}>
+                          <span
+                            className={`badge badge-${item.status === 'PUBLISHED' ? 'success' : item.status === 'DRAFT' ? 'warning' : 'neutral'}`}
+                          >
                             {item.status}
                           </span>
-                          <span className="badge badge-blue">{item.category.replace('_', ' ')}</span>
+                          <span className="badge badge-blue">
+                            {item.category.replace('_', ' ')}
+                          </span>
                         </div>
                         <div className="card-subtitle">
-                          {item.authorName ?? 'Unknown author'} · updated {formatDateTime(item.updatedAt)}
-                          {item.publishedAt ? ` · published ${formatDateTime(item.publishedAt)}` : ''}
+                          {item.authorName ?? 'Unknown author'} · updated{' '}
+                          {formatDateTime(item.updatedAt)}
+                          {item.publishedAt
+                            ? ` · published ${formatDateTime(item.publishedAt)}`
+                            : ''}
                         </div>
                       </div>
                       <div className="row">
@@ -298,7 +320,11 @@ export function AnnouncementsAdmin() {
               onChange={(event) => setEditor({ ...editor, body: event.target.value })}
             />
           </Field>
-          <Field label="Image URL (optional)" htmlFor="ann-image" hint="Must be an absolute http(s) URL.">
+          <Field
+            label="Image URL (optional)"
+            htmlFor="ann-image"
+            hint="Must be an absolute http(s) URL."
+          >
             <input
               id="ann-image"
               className="input"

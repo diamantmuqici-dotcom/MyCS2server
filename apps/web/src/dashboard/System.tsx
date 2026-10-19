@@ -93,8 +93,8 @@ export function System() {
             </table>
           </div>
           <p className="small muted">
-            Health snapshot generated {formatDateTime(health.data.generatedAt)}. The Discord row reflects
-            the bot heartbeat, not a direct gateway probe from the API.
+            Health snapshot generated {formatDateTime(health.data.generatedAt)}. The Discord row
+            reflects the bot heartbeat, not a direct gateway probe from the API.
           </p>
         </>
       )}
@@ -121,7 +121,13 @@ export function System() {
         />
         <StatCard
           label="Discord OAuth2"
-          value={authConfig.data ? (authConfig.data.discordOAuthEnabled ? 'Ready' : 'Not configured') : '—'}
+          value={
+            authConfig.data
+              ? authConfig.data.discordOAuthEnabled
+                ? 'Ready'
+                : 'Not configured'
+              : '—'
+          }
           hint="Client ID and secret must both be present."
         />
         <StatCard
@@ -141,12 +147,13 @@ export function System() {
           <div className="card-title">Security model in one paragraph</div>
         </div>
         <p className="prose">
-          Dashboard sessions are created only after Discord OAuth2 (or the development login, which is
-          refused in production) verifies an identity that is either on the environment allowlist or
-          has an active database grant. Session tokens are random, hashed at rest and delivered in
-          HttpOnly SameSite=Lax cookies; a second cookie provides a CSRF token that must be echoed in
-          the <span className="mono">x-csrf-token</span> header for writes. Every login, denial,
-          correction, grant, revoke and settings change is written to an append-only audit trail.
+          Dashboard sessions are created only after Discord OAuth2 (or the development login, which
+          is refused in production) verifies an identity that is either on the environment allowlist
+          or has an active database grant. Session tokens are random, hashed at rest and delivered
+          in HttpOnly SameSite=Lax cookies; a second cookie provides a CSRF token that must be
+          echoed in the <span className="mono">x-csrf-token</span> header for writes. Every login,
+          denial, correction, grant, revoke and settings change is written to an append-only audit
+          trail.
         </p>
       </section>
     </div>

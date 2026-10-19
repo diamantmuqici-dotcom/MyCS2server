@@ -1,10 +1,5 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
-import {
-  formatUtc,
-  nowIso,
-  type PcCheckOutcome,
-  type PcCheckStatus,
-} from '@dardania/shared';
+import { formatUtc, nowIso, type PcCheckOutcome, type PcCheckStatus } from '@dardania/shared';
 import { baseEmbed, pcCheckEmbed } from '../embeds.js';
 import { confirmAction } from '../ui.js';
 import type { BotContext } from '../context.js';
@@ -64,7 +59,8 @@ export async function handlePcRequest(
     if (channel) {
       const embed = pcCheckEmbed(created).addFields({
         name: 'Next steps',
-        value: 'A PC Checker must claim this case. Notes and the final outcome are stored on the case, not only in chat.',
+        value:
+          'A PC Checker must claim this case. Notes and the final outcome are stored on the case, not only in chat.',
       });
       await channel.send({ embeds: [embed] }).catch((error: unknown) => {
         ctx.logger.warn('Could not post PC-check case embed', error);
@@ -73,12 +69,18 @@ export async function handlePcRequest(
 
     await replyWithEmbeds(
       interaction,
-      baseEmbed('PC-check case created', `Case **${created.caseRef}** opened for <@${user.id}>.`)
-        .addFields(
-          { name: 'Status', value: created.status, inline: true },
-          { name: 'Steam snapshot', value: created.steamNameAtEvent ?? 'No Steam account recorded', inline: true },
-          { name: 'Dashboard', value: `/dashboard/pc-checks/${created.caseRef}` },
-        ),
+      baseEmbed(
+        'PC-check case created',
+        `Case **${created.caseRef}** opened for <@${user.id}>.`,
+      ).addFields(
+        { name: 'Status', value: created.status, inline: true },
+        {
+          name: 'Steam snapshot',
+          value: created.steamNameAtEvent ?? 'No Steam account recorded',
+          inline: true,
+        },
+        { name: 'Dashboard', value: `/dashboard/pc-checks/${created.caseRef}` },
+      ),
     );
   } catch (error) {
     await showError(interaction, error, ctx);
@@ -97,7 +99,9 @@ export async function handlePcAssign(
     const staff = interaction.options.getUser('staff', true);
     const existing = await ctx.api.getPcCheck(guild.id, reference);
     if (existing.status === 'COMPLETED' || existing.status === 'CANCELLED') {
-      throw new UserFacingError(`Case ${existing.caseRef} is already ${existing.status.toLowerCase()} and cannot be reassigned.`);
+      throw new UserFacingError(
+        `Case ${existing.caseRef} is already ${existing.status.toLowerCase()} and cannot be reassigned.`,
+      );
     }
     const updated = await ctx.api.updatePcCheck(existing.caseRef, {
       guildId: guild.id,
@@ -156,7 +160,10 @@ export async function handlePcNote(
     });
     await replyWithEmbeds(
       interaction,
-      baseEmbed('Note added', `The note was added to **${existing.caseRef}** and is visible in the dashboard.`).addFields({
+      baseEmbed(
+        'Note added',
+        `The note was added to **${existing.caseRef}** and is visible in the dashboard.`,
+      ).addFields({
         name: 'Note',
         value: truncate(note, 1000),
       }),
@@ -178,7 +185,8 @@ export async function handlePcClose(
     const outcome = interaction.options.getString('outcome', true) as PcCheckOutcome;
     const note = interaction.options.getString('note')?.trim() || null;
     const existing = await ctx.api.getPcCheck(guild.id, reference);
-    if (existing.status === 'COMPLETED') throw new UserFacingError('That case is already completed.');
+    if (existing.status === 'COMPLETED')
+      throw new UserFacingError('That case is already completed.');
 
     const confirmed = await confirmAction(interaction, {
       title: 'Close PC-check case',

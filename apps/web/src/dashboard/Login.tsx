@@ -100,8 +100,8 @@ export function Login() {
         {config?.devLoginEnabled && (
           <div className="stack" style={{ width: '100%', textAlign: 'left' }}>
             <div className="note">
-              <strong>Local development only.</strong> Development login is disabled automatically in
-              production. It only works for Discord IDs already on the allowlist.
+              <strong>Local development only.</strong> Development login is disabled automatically
+              in production. It only works for Discord IDs already on the allowlist.
             </div>
             <Field
               label="Allowlisted Discord user ID"
@@ -124,8 +124,8 @@ export function Login() {
         )}
 
         <div className="small muted">
-          <Icon name="shield" size={14} /> Sessions use HttpOnly cookies, CSRF double-submit tokens and
-          are rate limited. Discord roles never grant dashboard access.
+          <Icon name="shield" size={14} /> Sessions use HttpOnly cookies, CSRF double-submit tokens
+          and are rate limited. Discord roles never grant dashboard access.
         </div>
       </div>
     </div>

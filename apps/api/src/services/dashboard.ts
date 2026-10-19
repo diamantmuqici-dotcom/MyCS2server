@@ -14,6 +14,7 @@ import {
   getCaseDetail,
   getGuild,
   getGuildConfiguration,
+  UNRESOLVED_GUILD_NAME,
   getOverviewCounts,
   getStaffActivity,
   getUsersByIds,
@@ -86,9 +87,7 @@ export class DashboardService {
     };
   }
 
-  async listCases(
-    filters: Omit<CaseFilters, 'guildId'>,
-  ): Promise<Paginated<ModerationCaseDto>> {
+  async listCases(filters: Omit<CaseFilters, 'guildId'>): Promise<Paginated<ModerationCaseDto>> {
     this.assertGuildConfigured();
     return listCases(this.db, { ...filters, guildId: this.guildId });
   }
@@ -134,7 +133,7 @@ export class DashboardService {
     ]);
     return {
       guildId: this.guildId,
-      guildName: guild?.name ?? null,
+      guildName: guild && guild.name !== UNRESOLVED_GUILD_NAME ? guild.name : null,
       roles: configuration.config.roles,
       channels: configuration.config.channels,
       features: configuration.config.features,

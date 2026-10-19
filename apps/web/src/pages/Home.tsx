@@ -93,9 +93,15 @@ function ServerCards() {
           <div className="row-between" style={{ alignItems: 'flex-start' }}>
             <div>
               <div className="row" style={{ gap: '0.5rem' }}>
-                <span className={`badge ${server.status === 'ONLINE' ? 'badge-success' : server.status === 'OFFLINE' ? 'badge-danger' : 'badge-neutral'}`}>
+                <span
+                  className={`badge ${server.status === 'ONLINE' ? 'badge-success' : server.status === 'OFFLINE' ? 'badge-danger' : 'badge-neutral'}`}
+                >
                   <span className="dot" aria-hidden="true" />
-                  {server.status === 'ONLINE' ? 'Online' : server.status === 'OFFLINE' ? 'Offline' : 'Unmonitored'}
+                  {server.status === 'ONLINE'
+                    ? 'Online'
+                    : server.status === 'OFFLINE'
+                      ? 'Offline'
+                      : 'Unmonitored'}
                 </span>
                 {server.map ? <span className="small muted">Map: {server.map}</span> : null}
               </div>
@@ -160,7 +166,9 @@ export function Home() {
       <section className="hero">
         <div className="container hero-grid">
           <div className="hero-copy">
-            <span className="eyebrow">{config?.brandName ?? BRAND.name} · {BRAND.game}</span>
+            <span className="eyebrow">
+              {config?.brandName ?? BRAND.name} · {BRAND.game}
+            </span>
             <h1 className="hero-title">
               <span>Dardania</span>
               <em>| Elite</em>
@@ -216,8 +224,8 @@ export function Home() {
           <div className="alert alert-warning" role="status">
             <Icon name="alert" size={18} />
             <span>
-              The community configuration could not be loaded. Discord links and announcements may be
-              missing until the API is reachable.
+              The community configuration could not be loaded. Discord links and announcements may
+              be missing until the API is reachable.
             </span>
           </div>
         </div>
@@ -230,8 +238,8 @@ export function Home() {
               <span className="eyebrow">Live servers</span>
               <h2 className="h2">Where the community plays</h2>
               <p className="lead">
-                Player counts come from a direct A2S query to each configured server. If a server does
-                not answer, the card says so instead of showing a number.
+                Player counts come from a direct A2S query to each configured server. If a server
+                does not answer, the card says so instead of showing a number.
               </p>
             </div>
             <Link className="btn btn-secondary btn-small" to="/status">
@@ -302,8 +310,8 @@ export function Home() {
                 <span className="eyebrow">The rulebook</span>
                 <h2 className="h2">Clear rules, documented decisions</h2>
                 <p className="muted">
-                  Eight sections cover conduct, cheating, exploits, communication, accounts, PC checks
-                  and appeals. Both language versions are published from the same source.
+                  Eight sections cover conduct, cheating, exploits, communication, accounts, PC
+                  checks and appeals. Both language versions are published from the same source.
                 </p>
                 <div className="row">
                   <Link className="btn" to="/rules">

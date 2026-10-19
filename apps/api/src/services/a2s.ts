@@ -38,7 +38,11 @@ export function parseConnectAddress(
   connect: string,
   fallbackPort = DEFAULT_PORT,
 ): { host: string; port: number } | null {
-  const cleaned = connect.trim().replace(/^connect\s+/i, '').split(/[\s/]/)[0] ?? '';
+  const cleaned =
+    connect
+      .trim()
+      .replace(/^connect\s+/i, '')
+      .split(/[\s/]/)[0] ?? '';
   if (!cleaned) return null;
   const separator = cleaned.lastIndexOf(':');
   if (separator === -1) return { host: cleaned, port: fallbackPort };

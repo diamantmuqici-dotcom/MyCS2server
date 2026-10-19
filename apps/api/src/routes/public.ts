@@ -20,10 +20,7 @@ const announcementQuerySchema = z.object({
   pageSize: z.coerce.number().int().min(1).max(50).default(10),
 });
 
-export async function registerPublicRoutes(
-  app: FastifyInstance,
-  deps: AppDeps,
-): Promise<void> {
+export async function registerPublicRoutes(app: FastifyInstance, deps: AppDeps): Promise<void> {
   const { env, db } = deps;
   const announcements = new AnnouncementService(db, env.discord.guildId, deps.now);
 
@@ -32,7 +29,9 @@ export async function registerPublicRoutes(
       await db.get('SELECT 1 AS ok');
       return { status: 'ok', version: APP_VERSION, time: deps.now() };
     } catch {
-      return reply.code(503).send({ status: 'unavailable', version: APP_VERSION, time: deps.now() });
+      return reply
+        .code(503)
+        .send({ status: 'unavailable', version: APP_VERSION, time: deps.now() });
     }
   });
 
@@ -63,14 +62,11 @@ export async function registerPublicRoutes(
 
   app.get('/status', async (): Promise<PublicStatusDto> => buildPublicStatus(db, deps.now()));
 
-  app.get(
-    '/servers',
-    async (): Promise<{ servers: PublicServerStateDto[]; checkedAt: string }> => {
-      const targets = env.publicConfig.servers;
-      const servers = await Promise.all(
-        targets.map((target) => checkServer(target, { now: deps.now })),
-      );
-      return { servers, checkedAt: deps.now() };
-    },
-  );
+  app.get('/servers', async (): Promise<{ servers: PublicServerStateDto[]; checkedAt: string }> => {
+    const targets = env.publicConfig.servers;
+    const servers = await Promise.all(
+      targets.map((target) => checkServer(target, { now: deps.now })),
+    );
+    return { servers, checkedAt: deps.now() };
+  });
 }

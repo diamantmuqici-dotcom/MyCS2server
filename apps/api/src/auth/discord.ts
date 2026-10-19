@@ -85,7 +85,9 @@ export class DiscordOAuthClient {
       signal: AbortSignal.timeout(10_000),
     });
     if (!response.ok) {
-      throw new DiscordOAuthError(`Discord rejected the OAuth code exchange (HTTP ${response.status}).`);
+      throw new DiscordOAuthError(
+        `Discord rejected the OAuth code exchange (HTTP ${response.status}).`,
+      );
     }
     const parsed = tokenResponseSchema.safeParse(await response.json());
     if (!parsed.success) throw new DiscordOAuthError('Unexpected token response from Discord.');
@@ -98,7 +100,9 @@ export class DiscordOAuthClient {
       signal: AbortSignal.timeout(10_000),
     });
     if (!response.ok) {
-      throw new DiscordOAuthError(`Discord rejected the identity request (HTTP ${response.status}).`);
+      throw new DiscordOAuthError(
+        `Discord rejected the identity request (HTTP ${response.status}).`,
+      );
     }
     const parsed = identitySchema.safeParse(await response.json());
     if (!parsed.success) throw new DiscordOAuthError('Unexpected identity response from Discord.');

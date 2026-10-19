@@ -16,6 +16,22 @@ export const EMPTY_GUILD_CONFIG: GuildConfiguration = {
   features: {},
 };
 
+/**
+ * Placeholder used only until the bot reports the real guild name. The dashboard
+ * renders it as "unknown" rather than pretending it knows.
+ */
+export const UNRESOLVED_GUILD_NAME = 'Unknown Discord guild';
+
+/** Ensures the guild row exists so configuration and access writes satisfy the FK. */
+export async function ensureGuildRow(db: Db, guildId: string, now: string): Promise<void> {
+  await db.run(
+    `INSERT INTO guilds (id, name, joined_at, updated_at)
+     VALUES (?, ?, ?, ?)
+     ON CONFLICT (id) DO NOTHING`,
+    [guildId, UNRESOLVED_GUILD_NAME, now, now],
+  );
+}
+
 export interface UpsertGuildInput {
   id: string;
   name: string;
@@ -47,9 +63,10 @@ export async function getGuildConfiguration(
   db: Db,
   guildId: string,
 ): Promise<{ config: GuildConfiguration; updatedAt: string | null; updatedBy: string | null }> {
-  const row = await db.get<GuildConfigRow>('SELECT * FROM guild_configurations WHERE guild_id = ?', [
-    guildId,
-  ]);
+  const row = await db.get<GuildConfigRow>(
+    'SELECT * FROM guild_configurations WHERE guild_id = ?',
+    [guildId],
+  );
   if (!row) return { config: { ...EMPTY_GUILD_CONFIG }, updatedAt: null, updatedBy: null };
   const parsed = parseJson<Partial<GuildConfiguration>>(row.config_json, {});
   return {
@@ -72,6 +89,7 @@ export async function saveGuildConfiguration(
   updatedBy: string,
   now: string,
 ): Promise<void> {
+  await ensureGuildRow(db, guildId, now);
   await db.run(
     `INSERT INTO guild_configurations (guild_id, config_json, updated_at, updated_by)
      VALUES (?, ?, ?, ?)

@@ -65,7 +65,8 @@ export function Status() {
                 <div>
                   <div className="card-title">Services</div>
                   <div className="card-subtitle">
-                    The bot reports a heartbeat every 30 seconds; a stale heartbeat is shown as degraded.
+                    The bot reports a heartbeat every 30 seconds; a stale heartbeat is shown as
+                    degraded.
                   </div>
                 </div>
               </div>
@@ -101,8 +102,8 @@ export function Status() {
                   <span className="mono">{data.version}</span>).
                 </li>
                 <li>
-                  <strong>Database</strong> — a real <span className="mono">SELECT 1</span> against the
-                  moderation store.
+                  <strong>Database</strong> — a real <span className="mono">SELECT 1</span> against
+                  the moderation store.
                 </li>
                 <li>
                   <strong>Bot</strong> — the last authenticated heartbeat sent by the Discord bot.
@@ -112,8 +113,8 @@ export function Status() {
                 </li>
               </ul>
               <p className="small muted" style={{ marginTop: '0.8rem' }}>
-                Historical uptime percentages are not published because they would require a long-term
-                monitoring pipeline. We do not invent them. See the{' '}
+                Historical uptime percentages are not published because they would require a
+                long-term monitoring pipeline. We do not invent them. See the{' '}
                 <Link to="/status">health endpoint</Link> response for the raw data.
               </p>
             </div>

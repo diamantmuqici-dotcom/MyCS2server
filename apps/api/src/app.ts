@@ -125,22 +125,16 @@ export async function buildApp(
 
   const guards = createGuards(deps.db, env);
 
-  await app.register(
-    async (scope) => registerPublicRoutes(scope, deps),
-    { prefix: '/api' },
-  );
-  await app.register(
-    async (scope) => registerAuthRoutes(scope, deps, guards),
-    { prefix: '/api/auth' },
-  );
-  await app.register(
-    async (scope) => registerDashboardRoutes(scope, deps, guards),
-    { prefix: '/api/dashboard' },
-  );
-  await app.register(
-    async (scope) => registerInternalRoutes(scope, deps),
-    { prefix: '/api/internal' },
-  );
+  await app.register(async (scope) => registerPublicRoutes(scope, deps), { prefix: '/api' });
+  await app.register(async (scope) => registerAuthRoutes(scope, deps, guards), {
+    prefix: '/api/auth',
+  });
+  await app.register(async (scope) => registerDashboardRoutes(scope, deps, guards), {
+    prefix: '/api/dashboard',
+  });
+  await app.register(async (scope) => registerInternalRoutes(scope, deps), {
+    prefix: '/api/internal',
+  });
 
   if (env.serveWeb) {
     const root = resolve(env.webDistDir);

@@ -107,7 +107,10 @@ export const announcementInputSchema = z.object({
     .trim()
     .max(500)
     .url()
-    .refine((value) => value.startsWith('https://') || value.startsWith('http://'), 'Must be a URL.')
+    .refine(
+      (value) => value.startsWith('https://') || value.startsWith('http://'),
+      'Must be a URL.',
+    )
     .nullish(),
 });
 

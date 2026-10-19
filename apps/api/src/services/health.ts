@@ -1,8 +1,4 @@
-import {
-  nowIso,
-  type PublicStatusDto,
-  type ServiceHealthDto,
-} from '@dardania/shared';
+import { nowIso, type PublicStatusDto, type ServiceHealthDto } from '@dardania/shared';
 import { getServiceHealth, serviceHealthDetail, type Db } from '@dardania/db';
 
 export const APP_VERSION = '1.0.0';
@@ -25,9 +21,10 @@ export async function buildHealth(db: Db, now: string = nowIso()): Promise<Servi
   let botStatus: ServiceHealthDto['status'] = 'unknown';
   let botDetail = 'The bot has not reported a heartbeat yet.';
   if (bot && lastSeen) {
-    const reported = bot.status === 'operational' || bot.status === 'degraded' || bot.status === 'outage'
-      ? bot.status
-      : 'unknown';
+    const reported =
+      bot.status === 'operational' || bot.status === 'degraded' || bot.status === 'outage'
+        ? bot.status
+        : 'unknown';
     if (stale) {
       botStatus = 'degraded';
       botDetail = 'The bot heartbeat is stale — the bot may be offline.';
@@ -38,7 +35,12 @@ export async function buildHealth(db: Db, now: string = nowIso()): Promise<Servi
     }
   }
   return [
-    { service: 'api', status: 'operational', lastSeenAt: now, detail: `API v${APP_VERSION} responding.` },
+    {
+      service: 'api',
+      status: 'operational',
+      lastSeenAt: now,
+      detail: `API v${APP_VERSION} responding.`,
+    },
     {
       service: 'database',
       status: databaseOk ? 'operational' : 'outage',
@@ -53,7 +55,8 @@ export async function buildHealth(db: Db, now: string = nowIso()): Promise<Servi
     },
     {
       service: 'discord',
-      status: botStatus === 'operational' ? 'operational' : botStatus === 'outage' ? 'outage' : 'unknown',
+      status:
+        botStatus === 'operational' ? 'operational' : botStatus === 'outage' ? 'outage' : 'unknown',
       lastSeenAt: lastSeen,
       detail:
         botStatus === 'operational'
@@ -63,15 +66,16 @@ export async function buildHealth(db: Db, now: string = nowIso()): Promise<Servi
   ];
 }
 
-export async function buildPublicStatus(
-  db: Db,
-  now: string = nowIso(),
-): Promise<PublicStatusDto> {
+export async function buildPublicStatus(db: Db, now: string = nowIso()): Promise<PublicStatusDto> {
   const services = await buildHealth(db, now);
   const database = services.find((service) => service.service === 'database');
   const bot = services.find((service) => service.service === 'bot');
   const status: PublicStatusDto['status'] =
-    database?.status === 'outage' ? 'outage' : bot?.status === 'degraded' ? 'degraded' : 'operational';
+    database?.status === 'outage'
+      ? 'outage'
+      : bot?.status === 'degraded'
+        ? 'degraded'
+        : 'operational';
   return {
     status,
     checkedAt: now,

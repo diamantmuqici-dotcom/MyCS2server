@@ -11,12 +11,7 @@ import { useMutation } from '../lib/session.js';
 import { ApiError } from '../lib/api.js';
 import { formatDateTime } from '../lib/format.js';
 import { Alert, Button, EmptyState, ErrorPanel, Field, Loading } from '../components/ui.js';
-import {
-  AttributionBadge,
-  BanStatusBadge,
-  CaseStatusBadge,
-  PageHeader,
-} from './ui.js';
+import { AttributionBadge, BanStatusBadge, CaseStatusBadge, PageHeader } from './ui.js';
 import { Icon } from '../components/Icon.js';
 import { RequireLevel } from './RequireLevel.js';
 
@@ -82,7 +77,8 @@ function CorrectionForm({ caseRef, current }: { caseRef: string; current: Modera
       </div>
       {success && (
         <Alert tone="success">
-          <Icon name="check" size={16} /> Correction recorded. Reload the page to see the updated case.
+          <Icon name="check" size={16} /> Correction recorded. Reload the page to see the updated
+          case.
         </Alert>
       )}
       {error && <Alert tone="danger">{error}</Alert>}
@@ -108,7 +104,9 @@ function CorrectionForm({ caseRef, current }: { caseRef: string; current: Modera
                 id="fix-mod-name"
                 className="input"
                 value={form.moderatorName}
-                onChange={(event) => setForm((value) => ({ ...value, moderatorName: event.target.value }))}
+                onChange={(event) =>
+                  setForm((value) => ({ ...value, moderatorName: event.target.value }))
+                }
               />
             </Field>
             <Field label="SteamID64 at event" htmlFor="fix-steam-id">
@@ -116,7 +114,9 @@ function CorrectionForm({ caseRef, current }: { caseRef: string; current: Modera
                 id="fix-steam-id"
                 className="input mono"
                 value={form.steamId64}
-                onChange={(event) => setForm((value) => ({ ...value, steamId64: event.target.value }))}
+                onChange={(event) =>
+                  setForm((value) => ({ ...value, steamId64: event.target.value }))
+                }
               />
             </Field>
             <Field label="Steam name at event" htmlFor="fix-steam-name">
@@ -167,17 +167,23 @@ function CorrectionForm({ caseRef, current }: { caseRef: string; current: Modera
               id="fix-note"
               className="textarea"
               value={form.correctionNote}
-              onChange={(event) => setForm((value) => ({ ...value, correctionNote: event.target.value }))}
+              onChange={(event) =>
+                setForm((value) => ({ ...value, correctionNote: event.target.value }))
+              }
             />
           </Field>
           <div className="row">
-            <Button onClick={() => void submit()} disabled={busy || form.correctionNote.trim().length < 5}>
+            <Button
+              onClick={() => void submit()}
+              disabled={busy || form.correctionNote.trim().length < 5}
+            >
               {busy ? 'Saving…' : 'Save correction'}
             </Button>
           </div>
           <p className="field-hint">
-            Historical Steam names are snapshots. Changing the snapshot here is only correct when the
-            original value was recorded incorrectly — normal Steam renames must never be written back.
+            Historical Steam names are snapshots. Changing the snapshot here is only correct when
+            the original value was recorded incorrectly — normal Steam renames must never be written
+            back.
           </p>
         </div>
       )}
@@ -202,8 +208,8 @@ export function CaseDetail() {
           ← All cases
         </Link>
         {loading && !data && <Loading label="Loading case…" />}
-        {error && (
-          error.status === 404 ? (
+        {error &&
+          (error.status === 404 ? (
             <EmptyState
               icon="search"
               title="Case not found"
@@ -216,8 +222,7 @@ export function CaseDetail() {
             />
           ) : (
             <ErrorPanel error={error} onRetry={reload} />
-          )
-        )}
+          ))}
 
         {data && (
           <>
@@ -281,7 +286,9 @@ export function CaseDetail() {
                   <dt>Occurred</dt>
                   <dd>{formatDateTime(data.case.occurredAt)}</dd>
                   <dt>Expires</dt>
-                  <dd>{data.case.expiresAt ? formatDateTime(data.case.expiresAt) : 'Permanent / n/a'}</dd>
+                  <dd>
+                    {data.case.expiresAt ? formatDateTime(data.case.expiresAt) : 'Permanent / n/a'}
+                  </dd>
                 </dl>
                 {data.case.attributionStatus === 'UNKNOWN' && (
                   <p className="field-hint" style={{ marginTop: '0.7rem' }}>
@@ -328,8 +335,8 @@ export function CaseDetail() {
                   </dl>
                 ) : (
                   <p className="small muted">
-                    No live Steam account is linked to this case. The historical snapshot above is the
-                    only Steam identity evidence.
+                    No live Steam account is linked to this case. The historical snapshot above is
+                    the only Steam identity evidence.
                   </p>
                 )}
                 <p className="field-hint" style={{ marginTop: '0.7rem' }}>

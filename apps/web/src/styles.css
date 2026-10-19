@@ -301,7 +301,9 @@ li + li {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(54, 163, 255, 0.35), 0 8px 24px rgba(7, 91, 255, 0.35);
+  box-shadow:
+    0 0 0 2px rgba(54, 163, 255, 0.35),
+    0 8px 24px rgba(7, 91, 255, 0.35);
 }
 
 .brand-word {
@@ -336,7 +338,9 @@ li + li {
   font-weight: 600;
   padding: 0.5rem 0.75rem;
   border-radius: var(--radius-xs);
-  transition: color 140ms ease, background 140ms ease;
+  transition:
+    color 140ms ease,
+    background 140ms ease;
 }
 
 .site-nav a:hover {
@@ -386,8 +390,12 @@ li + li {
   color: #fff;
   background: var(--btn-bg);
   cursor: pointer;
-  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease,
-    border-color 140ms ease, opacity 140ms ease;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    background 140ms ease,
+    border-color 140ms ease,
+    opacity 140ms ease;
   box-shadow: 0 10px 26px rgba(7, 91, 255, 0.3);
   white-space: nowrap;
   text-decoration: none;
@@ -481,7 +489,9 @@ li + li {
   border-radius: inherit;
   padding: 1px;
   background: linear-gradient(140deg, rgba(54, 163, 255, 0.45), transparent 40%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -508,7 +518,10 @@ li + li {
 }
 
 .card-hover {
-  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .card-hover:hover {
@@ -582,7 +595,9 @@ li + li {
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 0 0 1px rgba(54, 163, 255, 0.35), 0 30px 80px rgba(7, 91, 255, 0.35);
+  box-shadow:
+    0 0 0 1px rgba(54, 163, 255, 0.35),
+    0 30px 80px rgba(7, 91, 255, 0.35);
 }
 
 .hero-emblem::after {
@@ -700,7 +715,9 @@ li + li {
   padding: 0.62rem 0.8rem;
   font-size: 0.92rem;
   font-family: inherit;
-  transition: border-color 140ms ease, box-shadow 140ms ease;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
 }
 
 .input::placeholder,
@@ -724,10 +741,15 @@ li + li {
 
 .select {
   appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%),
     linear-gradient(135deg, var(--muted) 50%, transparent 50%);
-  background-position: calc(100% - 18px) 55%, calc(100% - 12px) 55%;
-  background-size: 6px 6px, 6px 6px;
+  background-position:
+    calc(100% - 18px) 55%,
+    calc(100% - 12px) 55%;
+  background-size:
+    6px 6px,
+    6px 6px;
   background-repeat: no-repeat;
   padding-right: 2rem;
 }
@@ -887,7 +909,12 @@ table.data tr.clickable {
 }
 
 .skeleton {
-  background: linear-gradient(90deg, rgba(27, 53, 104, 0.4), rgba(54, 163, 255, 0.16), rgba(27, 53, 104, 0.4));
+  background: linear-gradient(
+    90deg,
+    rgba(27, 53, 104, 0.4),
+    rgba(54, 163, 255, 0.16),
+    rgba(27, 53, 104, 0.4)
+  );
   background-size: 200% 100%;
   border-radius: var(--radius-sm);
   animation: shimmer 1.4s infinite;
@@ -974,7 +1001,9 @@ table.data tr.clickable {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  box-shadow: 0 0 0 1px rgba(54, 163, 255, 0.4), 0 20px 50px rgba(7, 91, 255, 0.35);
+  box-shadow:
+    0 0 0 1px rgba(54, 163, 255, 0.4),
+    0 20px 50px rgba(7, 91, 255, 0.35);
 }
 
 /* ---------- dashboard ---------- */

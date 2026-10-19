@@ -33,7 +33,11 @@ export function Bans() {
           }}
         >
           <div className="filter-bar">
-            <Field label="Search active bans" htmlFor="ban-search" hint="Username, Discord ID or reason">
+            <Field
+              label="Search active bans"
+              htmlFor="ban-search"
+              hint="Username, Discord ID or reason"
+            >
               <input
                 id="ban-search"
                 className="input"
@@ -88,7 +92,10 @@ export function Bans() {
                     {data.items.map((item) => (
                       <tr key={item.id}>
                         <td>
-                          <Link className="mono cell-strong" to={`/dashboard/cases/${item.caseRef}`}>
+                          <Link
+                            className="mono cell-strong"
+                            to={`/dashboard/cases/${item.caseRef}`}
+                          >
                             {item.caseRef}
                           </Link>
                         </td>

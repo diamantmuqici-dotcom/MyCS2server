@@ -34,7 +34,12 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     items: [
       { to: '/dashboard/pc-checks', label: 'PC checks', icon: 'pc' },
       { to: '/dashboard/steam', label: 'Steam identity', icon: 'steam', level: 'CO_OWNER' },
-      { to: '/dashboard/announcements', label: 'Announcements', icon: 'megaphone', level: 'CO_OWNER' },
+      {
+        to: '/dashboard/announcements',
+        label: 'Announcements',
+        icon: 'megaphone',
+        level: 'CO_OWNER',
+      },
       { to: '/dashboard/staff', label: 'Staff activity', icon: 'users', level: 'CO_OWNER' },
     ],
   },
@@ -136,7 +141,12 @@ function Shell() {
             <div key={group.label}>
               <div className="dash-nav-group">{group.label}</div>
               {group.items
-                .filter((item) => !item.level || item.level === session.accessLevel || (item.level === 'CO_OWNER' && canSeeHistory))
+                .filter(
+                  (item) =>
+                    !item.level ||
+                    item.level === session.accessLevel ||
+                    (item.level === 'CO_OWNER' && canSeeHistory),
+                )
                 .map((item) => (
                   <NavLink
                     key={item.to}

@@ -1,8 +1,4 @@
-import {
-  levelRank,
-  type AccessLevel,
-  type SessionUserDto,
-} from '@dardania/shared';
+import { levelRank, type AccessLevel, type SessionUserDto } from '@dardania/shared';
 import { getActiveAccess, type Db } from '@dardania/db';
 import type { ApiEnv } from '@dardania/shared';
 
@@ -45,19 +41,17 @@ export function avatarUrl(discordUserId: string, avatarHash: string | null): str
   return `https://cdn.discordapp.com/avatars/${discordUserId}/${avatarHash}.${extension}?size=128`;
 }
 
-export function toSessionUser(
-  input: {
-    discordUserId: string;
-    username: string;
-    displayName: string | null;
-    avatarHash: string | null;
-    accessLevel: AccessLevel;
-    guildId: string;
-    source: SessionUserDto['source'];
-    sessionExpiresAt: string;
-    csrfToken: string;
-  },
-): SessionUserDto {
+export function toSessionUser(input: {
+  discordUserId: string;
+  username: string;
+  displayName: string | null;
+  avatarHash: string | null;
+  accessLevel: AccessLevel;
+  guildId: string;
+  source: SessionUserDto['source'];
+  sessionExpiresAt: string;
+  csrfToken: string;
+}): SessionUserDto {
   return {
     discordUserId: input.discordUserId,
     username: input.username,

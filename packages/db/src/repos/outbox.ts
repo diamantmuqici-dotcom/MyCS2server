@@ -44,11 +44,7 @@ export interface DueDelivery {
   payload: Record<string, unknown>;
 }
 
-export async function listDueDeliveries(
-  db: Db,
-  now: string,
-  limit = 20,
-): Promise<DueDelivery[]> {
+export async function listDueDeliveries(db: Db, now: string, limit = 20): Promise<DueDelivery[]> {
   const rows = await db.all<OutboxRow>(
     `SELECT * FROM integration_outbox
      WHERE status IN ('PENDING', 'FAILED') AND next_attempt_at <= ?
@@ -94,7 +90,14 @@ export async function completeDelivery(
     `UPDATE integration_outbox
      SET status = ?, attempts = ?, updated_at = ?, last_error = ?, next_attempt_at = ?
      WHERE id = ?`,
-    [dead ? 'DEAD' : 'FAILED', attempts, now, input.error ?? 'unknown error', nextAttemptAt, input.id],
+    [
+      dead ? 'DEAD' : 'FAILED',
+      attempts,
+      now,
+      input.error ?? 'unknown error',
+      nextAttemptAt,
+      input.id,
+    ],
   );
   return { status: dead ? 'DEAD' : 'FAILED', attempts, nextAttemptAt: dead ? null : nextAttemptAt };
 }

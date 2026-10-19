@@ -27,8 +27,8 @@ export function Rules() {
             </h1>
             <p className="lead">
               The same text is published in Discord by the bot. Last reviewed{' '}
-              {formatDate(RULES_UPDATED_AT)}. Where the two languages differ, the English text is the
-              reference.
+              {formatDate(RULES_UPDATED_AT)}. Where the two languages differ, the English text is
+              the reference.
             </p>
           </div>
           <div className="rule-lang" role="group" aria-label="Rule language">
@@ -53,7 +53,8 @@ export function Rules() {
 
         <div className="callout">
           <Icon name="info" size={15} /> Every punishment carries a case reference. If you believe a
-          decision is wrong, open an appeal with that reference — staff cannot review a case without it.
+          decision is wrong, open an appeal with that reference — staff cannot review a case without
+          it.
         </div>
 
         <div className="grid grid-2">
@@ -88,12 +89,13 @@ export function Rules() {
               Discord username, display name and Steam name observed at the time of the action.
             </p>
             <p>
-              Unbanning a member lifts the restriction but never deletes the original record. The case
-              remains in the history with the unban linked to it, so the timeline stays accurate.
+              Unbanning a member lifts the restriction but never deletes the original record. The
+              case remains in the history with the unban linked to it, so the timeline stays
+              accurate.
             </p>
             <p>
-              Dashboard access is limited to an explicit allowlist of Owner and Co-Owner Discord user
-              IDs. Discord roles alone never grant access to moderation history.
+              Dashboard access is limited to an explicit allowlist of Owner and Co-Owner Discord
+              user IDs. Discord roles alone never grant access to moderation history.
             </p>
           </div>
         </div>

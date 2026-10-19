@@ -7,7 +7,7 @@ import {
 } from 'discord.js';
 import { addSeconds, nowIso, type ActionType } from '@dardania/shared';
 import { UserFacingError, hierarchyProblem } from '../permissions.js';
-import { baseEmbed, successEmbed } from '../embeds.js';
+import { successEmbed } from '../embeds.js';
 import { confirmAction } from '../ui.js';
 import { findAuditEntry } from '../audit.js';
 import { formatUtc } from '@dardania/shared';
@@ -50,7 +50,14 @@ async function attribute(
     auditExecutorName: match?.executorName ?? null,
   };
   if (!match) {
-    return { status: 'VERIFIED', evidence: { ...evidence, auditNote: 'No audit entry matched; attribution relies on the verified command interaction.' } };
+    return {
+      status: 'VERIFIED',
+      evidence: {
+        ...evidence,
+        auditNote:
+          'No audit entry matched; attribution relies on the verified command interaction.',
+      },
+    };
   }
   const selfOrBot = !match.executorId || match.executorId === actorId || match.executorIsBot;
   return { status: selfOrBot ? 'VERIFIED' : 'PARTIAL', evidence };
@@ -109,7 +116,14 @@ export async function handleBan(
       );
     }
 
-    const attribution = await attribute(guild, 'ban', user.id, actor.id, actor.user.username, interaction.id);
+    const attribution = await attribute(
+      guild,
+      'ban',
+      user.id,
+      actor.id,
+      actor.user.username,
+      interaction.id,
+    );
     const occurredAt = nowIso();
     const outcome = await recordEvent(ctx, {
       guildId: guild.id,
@@ -129,18 +143,21 @@ export async function handleBan(
       metadata: { deleteMessageDays: deleteDays },
     });
 
-    const embed = successEmbed('Member banned', `<@${user.id}> was banned from **${guild.name}**.`)
-      .addFields(
-        { name: 'Reason', value: reason, inline: false },
-        { name: 'Moderator', value: `<@${actor.id}>`, inline: true },
-        { name: 'Occurred', value: formatUtc(occurredAt), inline: true },
-        { name: 'Record', value: recordedSummary(outcome), inline: false },
-        { name: 'Steam identity', value: steamSummary(outcome), inline: false },
-      );
+    const embed = successEmbed(
+      'Member banned',
+      `<@${user.id}> was banned from **${guild.name}**.`,
+    ).addFields(
+      { name: 'Reason', value: reason, inline: false },
+      { name: 'Moderator', value: `<@${actor.id}>`, inline: true },
+      { name: 'Occurred', value: formatUtc(occurredAt), inline: true },
+      { name: 'Record', value: recordedSummary(outcome), inline: false },
+      { name: 'Steam identity', value: steamSummary(outcome), inline: false },
+    );
     if (attribution.status === 'PARTIAL') {
       embed.addFields({
         name: 'Attribution note',
-        value: 'The Discord audit log shows a different executor for this ban. The case was recorded with PARTIAL attribution rather than a guess.',
+        value:
+          'The Discord audit log shows a different executor for this ban. The case was recorded with PARTIAL attribution rather than a guess.',
       });
     }
     await replyWithEmbeds(interaction, embed);
@@ -156,16 +173,21 @@ async function resolveUnbanTarget(
   const user = interaction.options.getUser('user');
   const rawId = interaction.options.getString('user-id')?.trim() || null;
   const steam = interaction.options.getString('steam')?.trim() || null;
-  const supplied = [user ? 'user' : null, rawId ? 'user-id' : null, steam ? 'steam' : null].filter(Boolean);
+  const supplied = [user ? 'user' : null, rawId ? 'user-id' : null, steam ? 'steam' : null].filter(
+    Boolean,
+  );
   if (supplied.length === 0) {
     throw new UserFacingError('Provide exactly one of: user, user-id or steam.');
   }
   if (supplied.length > 1) {
-    throw new UserFacingError('Provide only one of user, user-id or steam so the target is unambiguous.');
+    throw new UserFacingError(
+      'Provide only one of user, user-id or steam so the target is unambiguous.',
+    );
   }
   if (user) return user.id;
   if (rawId) {
-    if (!/^\d{17,20}$/.test(rawId)) throw new UserFacingError('user-id must be a numeric Discord snowflake.');
+    if (!/^\d{17,20}$/.test(rawId))
+      throw new UserFacingError('user-id must be a numeric Discord snowflake.');
     return rawId;
   }
   const resolved = await ctx.api.resolveSteam(steam!);
@@ -235,7 +257,14 @@ export async function handleUnban(
       );
     }
 
-    const attribution = await attribute(guild, 'unban', targetId, actor.id, actor.user.username, interaction.id);
+    const attribution = await attribute(
+      guild,
+      'unban',
+      targetId,
+      actor.id,
+      actor.user.username,
+      interaction.id,
+    );
     const occurredAt = nowIso();
     const outcome = await recordEvent(ctx, {
       guildId: guild.id,
@@ -259,13 +288,17 @@ export async function handleUnban(
 
     await replyWithEmbeds(
       interaction,
-      successEmbed('Ban lifted', `<@${targetId}> can rejoin **${guild.name}**.`)
-        .addFields(
-          { name: 'Reason', value: reason, inline: false },
-          { name: 'Moderator', value: `<@${actor.id}>`, inline: true },
-          { name: 'Record', value: recordedSummary(outcome), inline: false },
-          { name: 'Historical accuracy', value: 'The original ban remains in the history. This unban is a new linked record, not an edit.', inline: false },
-        ),
+      successEmbed('Ban lifted', `<@${targetId}> can rejoin **${guild.name}**.`).addFields(
+        { name: 'Reason', value: reason, inline: false },
+        { name: 'Moderator', value: `<@${actor.id}>`, inline: true },
+        { name: 'Record', value: recordedSummary(outcome), inline: false },
+        {
+          name: 'Historical accuracy',
+          value:
+            'The original ban remains in the history. This unban is a new linked record, not an edit.',
+          inline: false,
+        },
+      ),
     );
   } catch (error) {
     await showError(interaction, error, ctx);
@@ -296,7 +329,14 @@ export async function handleKick(
     if (!confirmed) return;
 
     await member.kick(auditReason(reason, actor));
-    const attribution = await attribute(guild, 'kick', user.id, actor.id, actor.user.username, interaction.id);
+    const attribution = await attribute(
+      guild,
+      'kick',
+      user.id,
+      actor.id,
+      actor.user.username,
+      interaction.id,
+    );
     const outcome = await recordEvent(ctx, {
       guildId: guild.id,
       guildName: guild.name,
@@ -313,11 +353,10 @@ export async function handleKick(
     });
     await replyWithEmbeds(
       interaction,
-      successEmbed('Member kicked', `**${user.tag}** was removed from the server.`)
-        .addFields(
-          { name: 'Reason', value: reason, inline: false },
-          { name: 'Record', value: recordedSummary(outcome), inline: false },
-        ),
+      successEmbed('Member kicked', `**${user.tag}** was removed from the server.`).addFields(
+        { name: 'Reason', value: reason, inline: false },
+        { name: 'Record', value: recordedSummary(outcome), inline: false },
+      ),
     );
   } catch (error) {
     await showError(interaction, error, ctx);
@@ -383,7 +422,8 @@ async function handleTimeoutAction(
         { name: 'Reason', value: reason, inline: false },
         {
           name: 'Expires',
-          value: mode === 'timeout' ? formatUtc(addSeconds(occurredAt, minutes * 60)) : 'Not applicable',
+          value:
+            mode === 'timeout' ? formatUtc(addSeconds(occurredAt, minutes * 60)) : 'Not applicable',
           inline: true,
         },
         { name: 'Record', value: recordedSummary(outcome), inline: false },
@@ -446,7 +486,11 @@ export async function handleWarn(
       interaction,
       successEmbed('Warning recorded', `<@${user.id}> received a formal warning.`).addFields(
         { name: 'Reason', value: reason, inline: false },
-        { name: 'Active warnings', value: activeCount === null ? 'Unavailable' : String(activeCount), inline: true },
+        {
+          name: 'Active warnings',
+          value: activeCount === null ? 'Unavailable' : String(activeCount),
+          inline: true,
+        },
         { name: 'Record', value: recordedSummary(outcome), inline: false },
       ),
     );

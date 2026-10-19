@@ -217,7 +217,10 @@ export function Cases() {
                     {data.items.map((item) => (
                       <tr key={item.id}>
                         <td>
-                          <Link className="mono cell-strong" to={`/dashboard/cases/${item.caseRef}`}>
+                          <Link
+                            className="mono cell-strong"
+                            to={`/dashboard/cases/${item.caseRef}`}
+                          >
                             {item.caseRef}
                           </Link>
                           <span className="cell-sub">{formatDateTime(item.recordedAt)}</span>

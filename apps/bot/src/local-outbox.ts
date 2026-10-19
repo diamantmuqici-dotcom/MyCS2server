@@ -109,7 +109,9 @@ export class LocalIngestOutbox {
   }
 
   /** Records an event through the API, falling back to the durable outbox. */
-  async record(payload: ModerationEventPayload): Promise<{ queued: boolean; result: IngestResult | null }> {
+  async record(
+    payload: ModerationEventPayload,
+  ): Promise<{ queued: boolean; result: IngestResult | null }> {
     try {
       const result = await this.client.ingest(payload);
       return { queued: false, result };

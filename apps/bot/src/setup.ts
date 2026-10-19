@@ -208,13 +208,15 @@ export async function previewSetup(guild: Guild): Promise<SetupPreview> {
     missingBotPermissions: [],
   };
   for (const category of PLANNED_CATEGORIES) {
-    (findCategory(guild, category.name) ? preview.categoriesExisting : preview.categoriesToCreate).push(
-      category.name,
-    );
+    (findCategory(guild, category.name)
+      ? preview.categoriesExisting
+      : preview.categoriesToCreate
+    ).push(category.name);
     for (const channel of category.channels) {
-      (findTextChannel(guild, channel.name) ? preview.channelsExisting : preview.channelsToCreate).push(
-        `#${channel.name}`,
-      );
+      (findTextChannel(guild, channel.name)
+        ? preview.channelsExisting
+        : preview.channelsToCreate
+      ).push(`#${channel.name}`);
     }
   }
   for (const role of PLANNED_ROLES) {
@@ -297,7 +299,9 @@ export async function applySetup(guild: Guild, actorId: string): Promise<ApplyRe
 
   for (const planned of PLANNED_ROLES) {
     try {
-      const existing: Role | undefined = guild.roles.cache.find((role) => role.name === planned.name);
+      const existing: Role | undefined = guild.roles.cache.find(
+        (role) => role.name === planned.name,
+      );
       if (existing) {
         result.roles[planned.key] = existing.id;
         result.reused.roles += 1;

@@ -85,11 +85,7 @@ export async function registerDashboardRoutes(
     const { ref } = z.object({ ref: z.string().min(3).max(64) }).parse(request.params);
     const payload = caseCorrectionSchema.parse(request.body ?? {});
     const existing = await dashboard.caseDetail(ref);
-    const {
-      correctionNote: _correctionNote,
-      moderatorDiscordUserId,
-      ...patch
-    } = payload;
+    const { correctionNote: _correctionNote, moderatorDiscordUserId, ...patch } = payload;
     const updated = await correctCaseFields(
       db,
       {
@@ -149,9 +145,7 @@ export async function registerDashboardRoutes(
   });
 
   app.get('/steam/:steamId64', { preHandler: guards.history }, async (request) => {
-    const { steamId64 } = z
-      .object({ steamId64: z.string().trim() })
-      .parse(request.params);
+    const { steamId64 } = z.object({ steamId64: z.string().trim() }).parse(request.params);
     if (!isValidSteamId64(steamId64)) throw badRequest('Invalid SteamID64.');
     const account = await getSteamAccountDetail(db, steamId64);
     if (!account) throw notFound('Steam account has not been observed yet.');
@@ -208,7 +202,11 @@ export async function registerDashboardRoutes(
         entityType: 'steam_account_link',
         entityId: steamId64,
         summary: `Steam account ${steamId64} linked to Discord user ${payload.discordUserId} (${payload.verification}).`,
-        after: { steamId64, discordUserId: payload.discordUserId, verification: payload.verification },
+        after: {
+          steamId64,
+          discordUserId: payload.discordUserId,
+          verification: payload.verification,
+        },
       },
       deps.now(),
     );
@@ -277,7 +275,10 @@ export async function registerDashboardRoutes(
       ...result,
       items: result.items.map((item) => ({
         ...item,
-        authorName: item.authorName ?? (item.authorDiscordId ? names.get(item.authorDiscordId) : null) ?? null,
+        authorName:
+          item.authorName ??
+          (item.authorDiscordId ? names.get(item.authorDiscordId) : null) ??
+          null,
       })),
     };
   });
@@ -329,11 +330,12 @@ export async function registerDashboardRoutes(
   app.get('/access', { preHandler: guards.owner }, async (request) => {
     const guildId = await ensureGuildConfigured(env);
     const includeHistory =
-      z
-        .object({ history: z.enum(['0', '1']).default('0') })
-        .parse(request.query ?? {}).history === '1';
+      z.object({ history: z.enum(['0', '1']).default('0') }).parse(request.query ?? {}).history ===
+      '1';
     return {
-      items: includeHistory ? await listAccessHistory(db, guildId) : await listActiveAccess(db, guildId),
+      items: includeHistory
+        ? await listAccessHistory(db, guildId)
+        : await listActiveAccess(db, guildId),
     };
   });
 

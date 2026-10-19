@@ -24,7 +24,7 @@ data/
 backups/
 *.backup
 *.dump
-*.sql
+*.sql.gz
 
 # logs
 logs/

@@ -63,7 +63,12 @@ export const PC_CHECK_STATUSES = [
 ] as const;
 export type PcCheckStatus = (typeof PC_CHECK_STATUSES)[number];
 
-export const PC_CHECK_OUTCOMES = ['CLEAN', 'SUSPICIOUS', 'CHEATING_CONFIRMED', 'INCONCLUSIVE'] as const;
+export const PC_CHECK_OUTCOMES = [
+  'CLEAN',
+  'SUSPICIOUS',
+  'CHEATING_CONFIRMED',
+  'INCONCLUSIVE',
+] as const;
 export type PcCheckOutcome = (typeof PC_CHECK_OUTCOMES)[number];
 
 export const ANNOUNCEMENT_CATEGORIES = [

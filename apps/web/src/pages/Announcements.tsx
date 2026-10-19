@@ -34,8 +34,8 @@ export function Announcements() {
             Announcements
           </h1>
           <p className="lead">
-            Official updates from the Dardania | Elite staff. Published items are also delivered to the
-            Discord announcements channel.
+            Official updates from the Dardania | Elite staff. Published items are also delivered to
+            the Discord announcements channel.
           </p>
         </div>
 
@@ -108,7 +108,9 @@ export function Announcements() {
                     <h2 className="h3">{item.title}</h2>
                     <p>{item.body.length > 180 ? `${item.body.slice(0, 177)}…` : item.body}</p>
                     <div className="row-between">
-                      <span className="small muted">{item.authorName ?? 'Dardania | Elite staff'}</span>
+                      <span className="small muted">
+                        {item.authorName ?? 'Dardania | Elite staff'}
+                      </span>
                       <span className="small" style={{ color: 'var(--accent)', fontWeight: 700 }}>
                         Read →
                       </span>

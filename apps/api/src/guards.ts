@@ -27,9 +27,7 @@ export function createGuards(db: Db, env: ApiEnv): Guards {
     } catch (error) {
       if (error instanceof HttpError) {
         if (error.statusCode === 401) clearSessionCookies(reply, env);
-        return reply
-          .code(error.statusCode)
-          .send({ error: error.code, message: error.message });
+        return reply.code(error.statusCode).send({ error: error.code, message: error.message });
       }
       throw error;
     }

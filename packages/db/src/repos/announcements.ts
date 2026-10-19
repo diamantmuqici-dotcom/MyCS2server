@@ -172,18 +172,12 @@ export async function archiveAnnouncement(
   return row ? mapAnnouncement(row) : null;
 }
 
-export async function getAnnouncementById(
-  db: Db,
-  id: string,
-): Promise<AnnouncementDto | null> {
+export async function getAnnouncementById(db: Db, id: string): Promise<AnnouncementDto | null> {
   const row = await db.get<AnnouncementRow>('SELECT * FROM announcements WHERE id = ?', [id]);
   return row ? mapAnnouncement(row) : null;
 }
 
-export async function getAnnouncementBySlug(
-  db: Db,
-  slug: string,
-): Promise<AnnouncementDto | null> {
+export async function getAnnouncementBySlug(db: Db, slug: string): Promise<AnnouncementDto | null> {
   const row = await db.get<AnnouncementRow>('SELECT * FROM announcements WHERE slug = ?', [slug]);
   return row ? mapAnnouncement(row) : null;
 }

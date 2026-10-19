@@ -1,4 +1,10 @@
-import { addHours, nowIso, type AccessLevel, type ApiEnv, type SessionUserDto } from '@dardania/shared';
+import {
+  addHours,
+  nowIso,
+  type AccessLevel,
+  type ApiEnv,
+  type SessionUserDto,
+} from '@dardania/shared';
 import {
   createSession,
   getActiveSession,
@@ -65,22 +71,20 @@ export interface EstablishedSession {
   expiresAt: string;
 }
 
-export async function establishSession(
-  input: {
-    db: Db;
-    env: ApiEnv;
-    user: {
-      id: string;
-      username: string;
-      global_name: string | null;
-      avatar_hash: string | null;
-    };
-    accessLevel: AccessLevel;
-    loginSource: SessionUserDto['source'];
-    request: FastifyRequest;
-    now?: string;
-  },
-): Promise<EstablishedSession> {
+export async function establishSession(input: {
+  db: Db;
+  env: ApiEnv;
+  user: {
+    id: string;
+    username: string;
+    global_name: string | null;
+    avatar_hash: string | null;
+  };
+  accessLevel: AccessLevel;
+  loginSource: SessionUserDto['source'];
+  request: FastifyRequest;
+  now?: string;
+}): Promise<EstablishedSession> {
   const now = input.now ?? nowIso();
   const sessionToken = newToken();
   const csrfToken = newToken();
@@ -159,7 +163,10 @@ export async function authenticateRequest(
     }
   }
 
-  if (new Date(now).getTime() - new Date(found.session.last_seen_at).getTime() > TOUCH_INTERVAL_MS) {
+  if (
+    new Date(now).getTime() - new Date(found.session.last_seen_at).getTime() >
+    TOUCH_INTERVAL_MS
+  ) {
     await touchSession(db, sessionId, now);
   }
 

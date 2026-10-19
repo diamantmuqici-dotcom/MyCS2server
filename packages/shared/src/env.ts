@@ -167,7 +167,6 @@ export function loadApiEnv(source: NodeJS.ProcessEnv = process.env): ApiEnv {
   if (!sessionSecret) {
     if (isProduction) throw new Error('SESSION_SECRET is required in production.');
     sessionSecret = randomBytes(48).toString('base64url');
-    // eslint-disable-next-line no-console
     console.warn('[config] SESSION_SECRET not set — generated an ephemeral development secret.');
   }
   if (isProduction && sessionSecret.length < 32) {
@@ -181,7 +180,10 @@ export function loadApiEnv(source: NodeJS.ProcessEnv = process.env): ApiEnv {
   }
 
   const owners = parseIdList(raw.DASHBOARD_OWNER_DISCORD_IDS, 'DASHBOARD_OWNER_DISCORD_IDS');
-  const coOwners = parseIdList(raw.DASHBOARD_CO_OWNER_DISCORD_IDS, 'DASHBOARD_CO_OWNER_DISCORD_IDS');
+  const coOwners = parseIdList(
+    raw.DASHBOARD_CO_OWNER_DISCORD_IDS,
+    'DASHBOARD_CO_OWNER_DISCORD_IDS',
+  );
   const pcCheckers = parseIdList(
     raw.DASHBOARD_PC_CHECKER_DISCORD_IDS,
     'DASHBOARD_PC_CHECKER_DISCORD_IDS',
@@ -192,7 +194,11 @@ export function loadApiEnv(source: NodeJS.ProcessEnv = process.env): ApiEnv {
 
   const databaseUrl = raw.DATABASE_URL || (isProduction ? '' : 'sqlite:./data/dev.sqlite');
   if (!databaseUrl) throw new Error('DATABASE_URL is required.');
-  if (isProduction && !databaseUrl.startsWith('postgres://') && !databaseUrl.startsWith('postgresql://')) {
+  if (
+    isProduction &&
+    !databaseUrl.startsWith('postgres://') &&
+    !databaseUrl.startsWith('postgresql://')
+  ) {
     throw new Error('DATABASE_URL must be a PostgreSQL connection string in production.');
   }
 
@@ -211,7 +217,15 @@ export function loadApiEnv(source: NodeJS.ProcessEnv = process.env): ApiEnv {
   ].filter((value, index, all) => all.indexOf(value) === index);
 
   const team = teamSchema.parse(parseJsonArray(raw.PUBLIC_TEAM_JSON, 'PUBLIC_TEAM_JSON'));
-  const servers = serverSchema.parse(parseJsonArray(raw.PUBLIC_SERVERS, 'PUBLIC_SERVERS'));
+  let servers: PublicServer[];
+  try {
+    servers = serverSchema.parse(parseJsonArray(raw.PUBLIC_SERVERS, 'PUBLIC_SERVERS'));
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : 'invalid value';
+    throw new Error(
+      `PUBLIC_SERVERS must be a JSON array of { label, connect } objects (${reason}).`,
+    );
+  }
 
   return {
     nodeEnv,
@@ -235,7 +249,8 @@ export function loadApiEnv(source: NodeJS.ProcessEnv = process.env): ApiEnv {
       clientId: raw.DISCORD_CLIENT_ID,
       clientSecret: raw.DISCORD_OAUTH_CLIENT_SECRET,
       redirectUri:
-        raw.DISCORD_OAUTH_REDIRECT_URI || `${apiBaseUrl.replace(/\/$/, '')}/api/auth/discord/callback`,
+        raw.DISCORD_OAUTH_REDIRECT_URI ||
+        `${apiBaseUrl.replace(/\/$/, '')}/api/auth/discord/callback`,
       guildId,
       allowedGuildIds,
     },

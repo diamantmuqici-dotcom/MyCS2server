@@ -81,7 +81,10 @@ export function PublicLayout() {
                 {item.label}
               </NavLink>
             ))}
-            <NavLink to="/dashboard" className={({ isActive }) => (isActive ? 'active' : undefined)}>
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) => (isActive ? 'active' : undefined)}
+            >
               Owner dashboard
             </NavLink>
           </nav>
@@ -147,8 +150,8 @@ export function PublicLayout() {
               © {new Date().getFullYear()} {BRAND.name}. Not affiliated with Valve Corporation.
             </span>
             <span>
-              Rules v{config?.rulesVersion ?? BRAND.abbreviation} · Counter-Strike 2 is a trademark of
-              Valve Corporation.
+              Rules v{config?.rulesVersion ?? BRAND.abbreviation} · Counter-Strike 2 is a trademark
+              of Valve Corporation.
             </span>
           </div>
         </div>

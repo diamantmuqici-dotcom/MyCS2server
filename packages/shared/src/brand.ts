@@ -26,8 +26,7 @@ export const BRAND = {
     warning: '#FFC857',
     danger: '#FF5C7A',
   },
-  fontStack:
-    "'Inter', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif",
+  fontStack: "'Inter', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif",
   logo: {
     emblem: 'brand/emblem-512.png',
     favicon: 'brand/favicon-64.png',

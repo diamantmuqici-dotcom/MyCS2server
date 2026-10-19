@@ -87,13 +87,12 @@ export function PcCheckDetail() {
           ← All PC checks
         </Link>
         {loading && !data && <Loading label="Loading PC-check case…" />}
-        {error && (
-          error.status === 404 ? (
+        {error &&
+          (error.status === 404 ? (
             <EmptyState icon="pc" title="PC-check case not found" />
           ) : (
             <ErrorPanel error={error} onRetry={reload} />
-          )
-        )}
+          ))}
 
         {data && (
           <>
@@ -103,7 +102,9 @@ export function PcCheckDetail() {
                 <div className="row" style={{ gap: '0.4rem', marginTop: 6 }}>
                   <PcStatusBadge status={data.pcCheck.status} />
                   {data.pcCheck.outcome && (
-                    <span className="badge badge-warning">{data.pcCheck.outcome.replace('_', ' ')}</span>
+                    <span className="badge badge-warning">
+                      {data.pcCheck.outcome.replace('_', ' ')}
+                    </span>
                   )}
                 </div>
               }
@@ -190,7 +191,10 @@ export function PcCheckDetail() {
                       placeholder={data.pcCheck.assignedTo ?? '123456789012345678'}
                     />
                   </Field>
-                  <Button onClick={() => void update()} disabled={busy || (!status && !outcome && !assignedTo.trim())}>
+                  <Button
+                    onClick={() => void update()}
+                    disabled={busy || (!status && !outcome && !assignedTo.trim())}
+                  >
                     {busy ? 'Saving…' : 'Save update'}
                   </Button>
                 </div>
@@ -217,7 +221,8 @@ export function PcCheckDetail() {
                       <strong>{item.note}</strong>
                       <span>
                         {item.authorNameAtEvent ?? item.authorDiscordId} ·{' '}
-                        {formatDateTime(item.createdAt)} · {item.visibility.toLowerCase()} visibility
+                        {formatDateTime(item.createdAt)} · {item.visibility.toLowerCase()}{' '}
+                        visibility
                       </span>
                     </div>
                   ))}

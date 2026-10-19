@@ -117,8 +117,7 @@ export class BackendClient {
         return parsed as T;
       } catch (error) {
         lastError = error;
-        const permanent =
-          error instanceof ApiError ? error.permanent : attempt >= retries - 1;
+        const permanent = error instanceof ApiError ? error.permanent : attempt >= retries - 1;
         if (permanent) throw error;
         await sleep(300 * Math.pow(3, attempt));
       }
@@ -130,7 +129,9 @@ export class BackendClient {
     return this.request('POST', '/api/internal/moderation-events', payload);
   }
 
-  async listCases(params: Record<string, string | number | undefined>): Promise<Paginated<ModerationCaseDto>> {
+  async listCases(
+    params: Record<string, string | number | undefined>,
+  ): Promise<Paginated<ModerationCaseDto>> {
     const query = new URLSearchParams();
     for (const [key, value] of Object.entries(params)) {
       if (value !== undefined && value !== '') query.set(key, String(value));
@@ -149,7 +150,15 @@ export class BackendClient {
   async getWarnings(
     guildId: string,
     userId: string,
-  ): Promise<{ warnings: { id: string; reason: string | null; created_at: string; moderator_discord_user_id: string | null; moderator_name_at_event: string | null }[] }> {
+  ): Promise<{
+    warnings: {
+      id: string;
+      reason: string | null;
+      created_at: string;
+      moderator_discord_user_id: string | null;
+      moderator_name_at_event: string | null;
+    }[];
+  }> {
     return this.request(
       'GET',
       `/api/internal/warnings/${encodeURIComponent(userId)}?guildId=${encodeURIComponent(guildId)}`,
@@ -172,10 +181,7 @@ export class BackendClient {
   }
 
   async resolveSteam(input: string): Promise<{ steamId64: string | null; error: string | null }> {
-    return this.request(
-      'GET',
-      `/api/internal/steam/resolve?input=${encodeURIComponent(input)}`,
-    );
+    return this.request('GET', `/api/internal/steam/resolve?input=${encodeURIComponent(input)}`);
   }
 
   async linkSteam(payload: {
@@ -198,7 +204,9 @@ export class BackendClient {
     return this.request('POST', '/api/internal/pc-checks', payload);
   }
 
-  async listPcChecks(params: Record<string, string | number | undefined>): Promise<Paginated<PcCheckDto>> {
+  async listPcChecks(
+    params: Record<string, string | number | undefined>,
+  ): Promise<Paginated<PcCheckDto>> {
     const query = new URLSearchParams();
     for (const [key, value] of Object.entries(params)) {
       if (value !== undefined && value !== '') query.set(key, String(value));
@@ -272,8 +280,16 @@ export class BackendClient {
     return result.announcement;
   }
 
-  async heartbeat(status: 'operational' | 'degraded' | 'outage', detail: Record<string, unknown>): Promise<void> {
-    await this.request('POST', '/api/internal/heartbeat', { service: 'bot', status, detail }, { retries: 1 });
+  async heartbeat(
+    status: 'operational' | 'degraded' | 'outage',
+    detail: Record<string, unknown>,
+  ): Promise<void> {
+    await this.request(
+      'POST',
+      '/api/internal/heartbeat',
+      { service: 'bot', status, detail },
+      { retries: 1 },
+    );
   }
 
   async listDeliveries(limit = 10): Promise<DeliveryItem[]> {
@@ -294,7 +310,11 @@ export class BackendClient {
       discordChannelId?: string | null;
     },
   ): Promise<void> {
-    await this.request('POST', `/api/internal/discord-deliveries/${encodeURIComponent(id)}/result`, result);
+    await this.request(
+      'POST',
+      `/api/internal/discord-deliveries/${encodeURIComponent(id)}/result`,
+      result,
+    );
   }
 
   async unattributedCases(guildId: string, minutes = 90): Promise<ModerationCaseDto[]> {
@@ -315,7 +335,11 @@ export class BackendClient {
       evidence: Record<string, unknown>;
     },
   ): Promise<void> {
-    await this.request('POST', `/api/internal/cases/${encodeURIComponent(caseId)}/attribution`, payload);
+    await this.request(
+      'POST',
+      `/api/internal/cases/${encodeURIComponent(caseId)}/attribution`,
+      payload,
+    );
   }
 
   async status(): Promise<PublicStatusDto> {

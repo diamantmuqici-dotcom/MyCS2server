@@ -78,7 +78,7 @@ export async function handleChatInput(
 ): Promise<void> {
   const subcommand = interaction.options.getSubcommand(false);
   const route = subcommand
-    ? ROUTES[`${interaction.commandName}:${subcommand}`] ?? ROUTES[interaction.commandName]
+    ? (ROUTES[`${interaction.commandName}:${subcommand}`] ?? ROUTES[interaction.commandName])
     : ROUTES[interaction.commandName];
 
   if (!route) {
