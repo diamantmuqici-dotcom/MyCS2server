@@ -1,0 +1,18 @@
+{
+  "name": "@dardania/bot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "register-commands": "tsx src/register-commands.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@dardania/shared": "*",
+    "discord.js": "^14.27.0",
+    "zod": "^4.6.7"
+  }
+}
