@@ -21,7 +21,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 22.x
           cache: npm
 
       - name: Install dependencies
@@ -37,6 +37,9 @@ jobs:
         run: npm run format:check
 
       - name: Tests
+        # node:sqlite is still flagged experimental on Node 22 LTS.
+        env:
+          NODE_OPTIONS: --experimental-sqlite
         run: npm test
 
       - name: Production build

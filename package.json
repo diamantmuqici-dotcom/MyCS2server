@@ -2,7 +2,7 @@
   "name": "dardania-elite",
   "version": "1.0.0",
   "private": true,
-  "description": "Dardania | Elite — CS2 community platform: website, Discord moderation bot, backend API, owner dashboard.",
+  "description": "Dardania | Elite \u2014 CS2 community platform: website, Discord moderation bot, backend API, owner dashboard.",
   "type": "module",
   "engines": {
     "node": ">=22.12.0"
@@ -28,7 +28,8 @@
     "db:seed-demo": "tsx scripts/seed-demo.ts",
     "db:promote-owner": "tsx scripts/promote-owner.ts",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "register:commands": "npm run register-commands -w @dardania/bot"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

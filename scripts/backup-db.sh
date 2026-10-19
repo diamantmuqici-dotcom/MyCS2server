@@ -16,7 +16,7 @@ if [ -z "${DATABASE_URL:-}" ]; then
 fi
 
 stamp="$(date -u +%Y%m%dT%H%M%SZ)"
-outdir="backups/$stamp"
+outdir="${BACKUP_DIR:-backups}/$stamp"
 mkdir -p "$outdir"
 
 case "$DATABASE_URL" in
